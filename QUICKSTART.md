@@ -35,11 +35,13 @@ The app will open at http://localhost:3000 🎉
 Click the **pizza icon** 🍕 in the top right corner to toggle dark mode!
 
 ## Need More Help?
-See [SETUP.md](./SETUP.md) for detailed instructions including:
-- Firebase setup walkthrough
-- Adding seed data to Firestore
-- Troubleshooting common issues
-- Project structure overview
+- See [SETUP.md](./SETUP.md) for detailed instructions including:
+  - Firebase setup walkthrough
+  - Adding seed data to Firestore
+  - Troubleshooting common issues
+  - Project structure overview
+- Use [CHECKLIST.md](./CHECKLIST.md) to verify your setup is complete
+- Check [CONTRIBUTING.md](./CONTRIBUTING.md) if you want to contribute
 
 ## Quick Firebase Data Setup
 

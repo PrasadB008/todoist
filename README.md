@@ -32,3 +32,28 @@ npm start
 ```
 
 The app will be available at `http://localhost:3000`
+
+### Automated Setup (Linux/Mac)
+For an easier setup, you can use the included setup script:
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Check out the [Contributing Guide](CONTRIBUTING.md) to get started.
+
+Looking for ideas? The project would benefit from:
+- Accessibility improvements (ARIA labels, keyboard navigation)
+- User authentication
+- Additional task management features
+- Mobile responsiveness enhancements
+
+## 📚 Documentation
+
+- **[README.md](README.md)** - Project overview (you are here)
+- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide
+- **[SETUP.md](SETUP.md)** - Detailed setup with troubleshooting
+- **[CHECKLIST.md](CHECKLIST.md)** - Setup verification checklist
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
