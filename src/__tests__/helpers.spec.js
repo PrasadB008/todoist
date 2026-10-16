@@ -1,4 +1,5 @@
 import {
+  capitalize,
   getTitle,
   getCollatedTitle,
   collatedTasksExist,
@@ -6,6 +7,30 @@ import {
 } from '../helpers';
 
 describe('helpers', () => {
+  describe('capitalize', () => {
+    it('capitalizes the first letter of a string', () => {
+      expect(capitalize('hello')).toBe('Hello');
+    });
+
+    it('returns the same string if already capitalized', () => {
+      expect(capitalize('Hello')).toBe('Hello');
+    });
+
+    it('handles single character strings', () => {
+      expect(capitalize('a')).toBe('A');
+    });
+
+    it('handles empty strings', () => {
+      expect(capitalize('')).toBe('');
+    });
+
+    it('returns non-string values unchanged', () => {
+      expect(capitalize(null)).toBe(null);
+      expect(capitalize(undefined)).toBe(undefined);
+      expect(capitalize(123)).toBe(123);
+    });
+  });
+
   describe('getTitle', () => {
     const projects = [
       { projectId: '1', name: 'Work' },
