@@ -6,3 +6,4 @@ Subscribe to my YouTube channel here: http://bit.ly/CognitiveSurge where I build
 
 ![Preview](todoist-preview.png?raw=true)
 Sync recheck 1.
+Sync recheck 2.
