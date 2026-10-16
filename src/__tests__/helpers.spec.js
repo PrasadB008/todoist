@@ -90,5 +90,19 @@ describe('helpers', () => {
 
       expect(earlier < later).toBe(true);
     });
+
+    it('generates unique, ordered ids within the same millisecond', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(3000000);
+      const ids = Array.from({ length: 200 }, () => generatePushId());
+
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(ids).toEqual([...ids].sort());
+    });
+
+    it('does not leave the random suffix as only dashes', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(4000000);
+
+      expect(generatePushId().slice(8)).not.toBe('------------');
+    });
   });
 });
