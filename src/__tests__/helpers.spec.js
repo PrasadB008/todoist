@@ -81,6 +81,21 @@ describe('helpers', () => {
       expect(generatePushId().slice(0, 8)).toBe('------01');
     });
 
+    it('produces different ids when called at the same time', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(1000000);
+
+      expect(generatePushId()).not.toBe(generatePushId());
+    });
+
+    it('produces ids that sort in creation order within the same millisecond', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(3000000);
+
+      const ids = Array.from({ length: 200 }, () => generatePushId());
+
+      expect([...ids].sort()).toEqual(ids);
+      expect(new Set(ids).size).toBe(ids.length);
+    });
+
     it('produces ids that sort in time order', () => {
       const spy = jest.spyOn(Date.prototype, 'getTime');
       spy.mockReturnValue(1000000);
@@ -89,6 +104,20 @@ describe('helpers', () => {
       const later = generatePushId();
 
       expect(earlier < later).toBe(true);
+    });
+
+    it('generates unique, ordered ids within the same millisecond', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(3000000);
+      const ids = Array.from({ length: 200 }, () => generatePushId());
+
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(ids).toEqual([...ids].sort());
+    });
+
+    it('does not leave the random suffix as only dashes', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(4000000);
+
+      expect(generatePushId().slice(8)).not.toBe('------------');
     });
   });
 });
