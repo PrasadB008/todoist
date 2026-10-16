@@ -6,3 +6,4 @@ Subscribe to my YouTube channel here: http://bit.ly/CognitiveSurge where I build
 
 ![Preview](todoist-preview.png?raw=true)
 Live activity check.
+Live activity 2.
