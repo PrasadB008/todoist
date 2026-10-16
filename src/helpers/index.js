@@ -13,8 +13,6 @@ export const generatePushId = (() => {
   const PUSH_CHARS =
     '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
 
-  const lastRandChars = [];
-
   return function() {
     let now = new Date().getTime();
 
@@ -26,8 +24,8 @@ export const generatePushId = (() => {
 
     let id = timeStampChars.join('');
 
-    for (i = 0; i < 12; i++) {
-      id += PUSH_CHARS.charAt(lastRandChars[i]);
+    for (let j = 0; j < 12; j++) {
+      id += PUSH_CHARS.charAt(Math.floor(Math.random() * 64));
     }
 
     return id;
