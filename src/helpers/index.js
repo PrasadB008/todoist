@@ -9,6 +9,9 @@ export const getCollatedTitle = (projects, key) =>
 export const collatedTasksExist = selectedProject =>
   collatedTasks.find(task => task.key === selectedProject);
 
+export const isNonEmptyString = (value) =>
+  typeof value === 'string' && value.trim().length > 0;
+
 export const generatePushId = (() => {
   const PUSH_CHARS =
     '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
