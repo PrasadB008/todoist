@@ -4,6 +4,11 @@ import moment from 'moment';
 import { firebase } from '../firebase';
 import { collatedTasksExist } from '../helpers';
 
+/**
+ * Subscribes to the user's tasks in Firestore, filtered by the selected project.
+ * @param {string|number} selectedProject - Project id or collated key (INBOX, TODAY, NEXT_7).
+ * @returns {{tasks: Array<Object>, archivedTasks: Array<Object>}} Active and archived tasks.
+ */
 export const useTasks = selectedProject => {
   const [tasks, setTasks] = useState([]);
   const [archivedTasks, setArchivedTasks] = useState([]);
@@ -51,6 +56,10 @@ export const useTasks = selectedProject => {
   return { tasks, archivedTasks };
 };
 
+/**
+ * Fetches the user's projects from Firestore, ordered by projectId.
+ * @returns {{projects: Array<Object>, setProjects: Function}} Projects and their state setter.
+ */
 export const useProjects = () => {
   const [projects, setProjects] = useState([]);
 
