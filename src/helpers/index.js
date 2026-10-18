@@ -27,7 +27,7 @@ export const generatePushId = (() => {
     let id = timeStampChars.join('');
 
     for (i = 0; i < 12; i++) {
-      id += PUSH_CHARS.charAt(lastRandChars[i]);
+      id += PUSH_CHARS.charAt(Math.floor(Math.random() * 64));
     }
 
     return id;
