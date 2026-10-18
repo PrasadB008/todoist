@@ -3,6 +3,7 @@ import {
   getCollatedTitle,
   collatedTasksExist,
   generatePushId,
+  isNonEmptyString,
 } from '../helpers';
 
 describe('helpers', () => {
@@ -52,6 +53,29 @@ describe('helpers', () => {
     it('returns undefined for a regular project id', () => {
       expect(collatedTasksExist('1')).toBeUndefined();
     });
+  });
+
+  describe('isNonEmptyString', () => {
+    it.each([undefined, null, 0, 42, true, {}, [], ['a']])(
+      'returns false for the non-string value %p',
+      (value) => {
+        expect(isNonEmptyString(value)).toBe(false);
+      }
+    );
+
+    it.each(['', ' ', '   ', '\t\n'])(
+      'returns false for the blank string %j',
+      (value) => {
+        expect(isNonEmptyString(value)).toBe(false);
+      }
+    );
+
+    it.each(['a', 'Buy milk', '  padded  '])(
+      'returns true for the nonblank string %j',
+      (value) => {
+        expect(isNonEmptyString(value)).toBe(true);
+      }
+    );
   });
 
   describe('generatePushId', () => {
