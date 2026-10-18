@@ -395,4 +395,123 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('Slash Commands', () => {
+    it('parses /todo slash command and adds task with extracted text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy groceries'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('parses /todo slash command with multiple words', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete the project documentation and review' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete the project documentation and review'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('does not process /todo command if no text follows', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('does not process /todo command with only whitespace', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo   ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo   ');
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('processes /todo command with special characters', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Fix bug #123 & improve performance!' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Fix bug #123 & improve performance!'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('processes /todo command with TODAY project', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete today' },
+      });
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('processes /todo command with NEXT_7 project', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'NEXT_7',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete next week' },
+      });
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+  });
 });
