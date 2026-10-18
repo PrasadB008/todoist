@@ -22,9 +22,32 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const handleSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      return todoMatch[1];
+    }
+    // If input starts with /todo but has no text after it, return a special marker
+    if (input.match(/^\/todo\s*$/)) {
+      return false;
+    }
+    return null;
+  };
+
   const addTask = () => {
     const projectId = project || selectedProject;
     let collatedDate = '';
+    let taskText = task;
+
+    // Check for /todo slash command
+    const slashCommandText = handleSlashCommand(task);
+    if (slashCommandText === false) {
+      // /todo command with no text - don't add task
+      return false;
+    }
+    if (slashCommandText) {
+      taskText = slashCommandText;
+    }
 
     if (projectId === 'TODAY') {
       collatedDate = moment().format('DD/MM/YYYY');
@@ -33,7 +56,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      taskText &&
       projectId &&
       firebase
         .firestore()
@@ -41,7 +64,7 @@ export const AddTask = ({
         .add({
           archived: false,
           projectId,
-          task,
+          task: taskText,
           date: collatedDate || taskDate,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
