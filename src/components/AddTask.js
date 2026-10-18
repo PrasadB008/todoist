@@ -22,7 +22,22 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const parseSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      return { command: 'todo', text: todoMatch[1] };
+    }
+    return null;
+  };
+
   const addTask = () => {
+    let taskText = task;
+    const slashCommand = parseSlashCommand(task);
+
+    if (slashCommand && slashCommand.command === 'todo') {
+      taskText = slashCommand.text;
+    }
+
     const projectId = project || selectedProject;
     let collatedDate = '';
 
@@ -33,7 +48,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      taskText &&
       projectId &&
       firebase
         .firestore()
@@ -41,7 +56,7 @@ export const AddTask = ({
         .add({
           archived: false,
           projectId,
-          task,
+          task: taskText,
           date: collatedDate || taskDate,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
