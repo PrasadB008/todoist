@@ -10,11 +10,13 @@ jest.mock('../context', () => ({
   useProjectsValue: jest.fn(() => ({ projects: [] })),
 }));
 
+const mockAdd = jest.fn(() => Promise.resolve('Never mock firebase'));
+
 jest.mock('../firebase', () => ({
   firebase: {
     firestore: jest.fn(() => ({
       collection: jest.fn(() => ({
-        add: jest.fn(() => Promise.resolve('Never mock firebase')),
+        add: (...args) => mockAdd(...args),
       })),
     })),
   },
@@ -393,6 +395,96 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
+    });
+  });
+
+  describe('/todo slash command', () => {
+    const renderQuickAdd = (props = {}) => {
+      const setShowQuickAddTask = jest.fn();
+      const utils = render(
+        <AddTask
+          showAddTaskMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
+          {...props}
+        />
+      );
+      return { ...utils, setShowQuickAddTask };
+    };
+
+    const type = (input, value) =>
+      fireEvent.change(input, { target: { value } });
+    const pressEnter = (input) =>
+      fireEvent.keyDown(input, { key: 'Enter', code: 13 });
+
+    beforeEach(() => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+    });
+
+    it('creates a trimmed task in the current project on Enter', () => {
+      const { queryByTestId, setShowQuickAddTask } = renderQuickAdd();
+      const input = queryByTestId('add-task-content');
+
+      type(input, '/todo    buy milk   ');
+      pressEnter(input);
+
+      expect(mockAdd).toHaveBeenCalledTimes(1);
+      expect(mockAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'buy milk',
+          projectId: '1',
+          archived: false,
+        })
+      );
+      expect(setShowQuickAddTask).toHaveBeenCalledWith(false);
+    });
+
+    it('ignores /todo with empty text', () => {
+      const { queryByTestId, setShowQuickAddTask } = renderQuickAdd();
+      const input = queryByTestId('add-task-content');
+
+      type(input, '/todo');
+      pressEnter(input);
+      type(input, '/todo    ');
+      pressEnter(input);
+
+      expect(mockAdd).not.toHaveBeenCalled();
+      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+    });
+
+    it('ignores keys other than Enter', () => {
+      const { queryByTestId } = renderQuickAdd();
+      const input = queryByTestId('add-task-content');
+
+      type(input, '/todo buy milk');
+      fireEvent.keyDown(input, { key: 'a', code: 65 });
+
+      expect(mockAdd).not.toHaveBeenCalled();
+    });
+
+    it('does not treat other text as the command', () => {
+      const { queryByTestId } = renderQuickAdd();
+      const input = queryByTestId('add-task-content');
+
+      type(input, '/todoist milk');
+      pressEnter(input);
+      type(input, 'buy milk');
+      pressEnter(input);
+
+      expect(mockAdd).not.toHaveBeenCalled();
+    });
+
+    it('does not run outside the quick add overlay', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
+
+      type(input, '/todo buy milk');
+      pressEnter(input);
+
+      expect(mockAdd).not.toHaveBeenCalled();
     });
   });
 });
