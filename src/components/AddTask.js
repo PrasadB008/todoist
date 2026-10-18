@@ -22,7 +22,7 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
-  const addTask = () => {
+  const addTask = (taskText = task) => {
     const projectId = project || selectedProject;
     let collatedDate = '';
 
@@ -33,7 +33,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      taskText &&
       projectId &&
       firebase
         .firestore()
@@ -41,7 +41,7 @@ export const AddTask = ({
         .add({
           archived: false,
           projectId,
-          task,
+          task: taskText,
           date: collatedDate || taskDate,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
@@ -52,6 +52,16 @@ export const AddTask = ({
           setShowProjectOverlay(false);
         })
     );
+  };
+
+  const handleSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      const todoText = todoMatch[1];
+      addTask(todoText);
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -128,11 +138,18 @@ export const AddTask = ({
             type="button"
             className="add-task__submit"
             data-testid="add-task"
-            onClick={() =>
-              showQuickAddTask
-                ? addTask() && setShowQuickAddTask(false)
-                : addTask()
-            }
+            onClick={() => {
+              const isSlashCommand = handleSlashCommand(task);
+              if (!isSlashCommand) {
+                if (showQuickAddTask) {
+                  addTask() && setShowQuickAddTask(false);
+                } else {
+                  addTask();
+                }
+              } else if (showQuickAddTask) {
+                setShowQuickAddTask(false);
+              }
+            }}
           >
             Add Task
           </button>
