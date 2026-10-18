@@ -122,7 +122,20 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={(e) => {
+              const input = e.target.value;
+              if (input.startsWith('/todo ')) {
+                const taskText = input.slice(6).trim();
+                if (taskText) {
+                  setTask(taskText);
+                } else {
+                  // If no text after /todo, don't process the command
+                  setTask(input);
+                }
+              } else {
+                setTask(input);
+              }
+            }}
           />
           <button
             type="button"

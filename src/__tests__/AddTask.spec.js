@@ -395,4 +395,95 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('Slash Commands', () => {
+    it('handles /todo slash command to set task text', () => {
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('Buy groceries');
+    });
+
+    it('handles /todo slash command with multiple words', () => {
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete the project report by Friday' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Complete the project report by Friday'
+      );
+    });
+
+    it('does not process /todo command if no text follows', () => {
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo ');
+    });
+
+    it('does not process other slash commands', () => {
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/other command' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/other command');
+    });
+
+    it('allows adding task after /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Important meeting' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('Important meeting');
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+  });
 });
