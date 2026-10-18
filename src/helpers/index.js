@@ -1,5 +1,10 @@
 import { collatedTasks } from '../constants';
 
+export const capitalize = (str) => {
+  if (typeof str !== 'string') return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 export const getTitle = (projects, projectId) =>
   projects.find(project => project.projectId === projectId);
 
