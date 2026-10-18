@@ -81,6 +81,48 @@ describe('helpers', () => {
       expect(generatePushId().slice(0, 8)).toBe('------01');
     });
 
+    it('uses Math.random for the 12 random characters', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(5000);
+      const random = jest.spyOn(Math, 'random').mockReturnValue(0);
+      expect(generatePushId().slice(8)).toBe('-'.repeat(12));
+
+      Date.prototype.getTime.mockReturnValue(6000);
+      random.mockReturnValue(0.999);
+      expect(generatePushId().slice(8)).toBe('z'.repeat(12));
+    });
+
+    it('gives different random parts at different times', () => {
+      const time = jest.spyOn(Date.prototype, 'getTime');
+      time.mockReturnValue(7000);
+      const first = generatePushId();
+      time.mockReturnValue(8000);
+      const second = generatePushId();
+
+      expect(first.slice(8)).not.toBe(second.slice(8));
+    });
+
+    it('keeps ids unique and ordered within the same millisecond', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(9000);
+      const ids = [generatePushId(), generatePushId(), generatePushId()];
+
+      expect(new Set(ids).size).toBe(3);
+      expect([...ids].sort()).toEqual(ids);
+    });
+
+    it('carries into the previous position when a character is at max', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(10000);
+      const random = jest.spyOn(Math, 'random').mockReturnValue(0);
+      for (let n = 0; n < 11; n += 1) {
+        random.mockReturnValueOnce(0);
+      }
+      random.mockReturnValueOnce(0.999);
+      const first = generatePushId();
+      const second = generatePushId();
+
+      expect(first.slice(8)).toBe(`${'-'.repeat(11)}z`);
+      expect(second.slice(8)).toBe(`${'-'.repeat(10)}0-`);
+    });
+
     it('produces ids that sort in time order', () => {
       const spy = jest.spyOn(Date.prototype, 'getTime');
       spy.mockReturnValue(1000000);
