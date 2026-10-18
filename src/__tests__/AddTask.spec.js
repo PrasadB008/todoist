@@ -395,4 +395,71 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('/todo slash command', () => {
+    it('parses /todo command and extracts task text', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('Buy groceries');
+    });
+
+    it('parses /todo command with multiple words', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete project report by Friday' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Complete project report by Friday'
+      );
+    });
+
+    it('does not parse /todo command without text', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+    });
+
+    it('does not parse /todo command with only whitespace', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo   ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo   ');
+    });
+
+    it('ignores non-/todo slash commands', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/other some text' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/other some text');
+    });
+
+    it('allows regular text without slash commands', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: 'Regular task without slash command' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Regular task without slash command'
+      );
+    });
+  });
 });
