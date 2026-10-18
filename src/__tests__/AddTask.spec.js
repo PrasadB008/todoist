@@ -395,4 +395,84 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('slash commands', () => {
+    it('should parse /todo command and extract task text', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+      expect(taskInput.value).toBe('/todo Buy groceries');
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection).toHaveBeenCalledWith('tasks');
+      expect(firebase.firestore().collection('tasks').add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Buy groceries',
+        })
+      );
+    });
+
+    it('should handle /todo command with multiple words', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, {
+        target: { value: '/todo Complete project report and send to manager' },
+      });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection('tasks').add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Complete project report and send to manager',
+        })
+      );
+    });
+
+    it('should not process /todo command if no text follows', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      // Should not call add since /todo without text is invalid
+      expect(firebase.firestore().collection('tasks').add).not.toHaveBeenCalled();
+    });
+
+    it('should not process /todo command if there is only whitespace after it', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo   ' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      // Should not call add since /todo with only whitespace is invalid
+      expect(firebase.firestore().collection('tasks').add).not.toHaveBeenCalled();
+    });
+
+    it('should treat regular text starting with /todo as normal task if not in command format', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: 'Check /todo list' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection('tasks').add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Check /todo list',
+        })
+      );
+    });
+  });
 });
