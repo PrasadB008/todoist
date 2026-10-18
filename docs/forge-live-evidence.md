@@ -29,5 +29,6 @@ All other test files are in the same `src/__tests__/` directory.
 
 - Initial Forge documentation change.
 - Forge follow-up marker: LIVE-101-FOLLOW-UP.
+- Post-merge continuation: LIVE-101-AFTER-MERGE.
 
 External GitHub edit marker: LIVE-101-REMOTE-COMMIT.
