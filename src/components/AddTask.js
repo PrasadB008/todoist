@@ -22,6 +22,17 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const handleSlashCommand = (input) => {
+    if (input.startsWith('/todo ')) {
+      const taskText = input.slice(6).trim();
+      if (taskText) {
+        setTask(taskText);
+        return true;
+      }
+    }
+    return false;
+  };
+
   const addTask = () => {
     const projectId = project || selectedProject;
     let collatedDate = '';
@@ -122,7 +133,10 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={(e) => {
+              const input = e.target.value;
+              handleSlashCommand(input) || setTask(input);
+            }}
           />
           <button
             type="button"
