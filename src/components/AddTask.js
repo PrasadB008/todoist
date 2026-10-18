@@ -22,7 +22,7 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
-  const addTask = () => {
+  const addTask = (taskText = task) => {
     const projectId = project || selectedProject;
     let collatedDate = '';
 
@@ -33,7 +33,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      taskText &&
       projectId &&
       firebase
         .firestore()
@@ -41,7 +41,7 @@ export const AddTask = ({
         .add({
           archived: false,
           projectId,
-          task,
+          task: taskText,
           date: collatedDate || taskDate,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
@@ -52,6 +52,19 @@ export const AddTask = ({
           setShowProjectOverlay(false);
         })
     );
+  };
+
+  const handleTaskInputChange = (e) => {
+    const value = e.target.value;
+    setTask(value);
+
+    // Check for /todo slash command
+    const todoMatch = value.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      const todoText = todoMatch[1];
+      // Add the task and reset the input
+      addTask(todoText);
+    }
   };
 
   return (
@@ -122,7 +135,7 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={handleTaskInputChange}
           />
           <button
             type="button"
