@@ -3,9 +3,31 @@ import {
   getCollatedTitle,
   collatedTasksExist,
   generatePushId,
+  parseTodoCommand,
 } from '../helpers';
 
 describe('helpers', () => {
+  describe('parseTodoCommand', () => {
+    it('strips the /todo prefix', () => {
+      expect(parseTodoCommand('/todo buy milk')).toBe('buy milk');
+    });
+
+    it('is case-insensitive and trims whitespace', () => {
+      expect(parseTodoCommand('  /TODO   call mum  ')).toBe('call mum');
+    });
+
+    it('returns an empty string for a bare /todo', () => {
+      expect(parseTodoCommand('/todo')).toBe('');
+      expect(parseTodoCommand('/todo   ')).toBe('');
+    });
+
+    it('leaves plain text and other commands untouched', () => {
+      expect(parseTodoCommand('buy milk')).toBe('buy milk');
+      expect(parseTodoCommand('/todolist')).toBe('/todolist');
+      expect(parseTodoCommand('/other x')).toBe('/other x');
+    });
+  });
+
   describe('getTitle', () => {
     const projects = [
       { projectId: '1', name: 'Work' },

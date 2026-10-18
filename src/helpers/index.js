@@ -1,5 +1,15 @@
 import { collatedTasks } from '../constants';
 
+// Parses "/todo <text>" and returns the task text. Input without the
+// /todo prefix is returned trimmed; a bare "/todo" returns ''.
+export const parseTodoCommand = (input = '') => {
+  const trimmed = input.trim();
+  const match = /^\/todo(?:\s+([\s\S]*))?$/i.exec(trimmed);
+
+  if (!match) return trimmed;
+  return (match[1] || '').trim();
+};
+
 export const getTitle = (projects, projectId) =>
   projects.find(project => project.projectId === projectId);
 
