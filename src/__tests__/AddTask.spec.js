@@ -395,4 +395,77 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('Slash Commands', () => {
+    it('should parse /todo command and extract task text', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+      expect(taskInput.value).toBe('/todo Buy groceries');
+    });
+
+    it('should add task with /todo command without the command prefix', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo Complete project' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      // Verify the task was added (mocked firebase will be called)
+      const { firebase } = require('../firebase');
+      expect(firebase.firestore().collection().add).toHaveBeenCalled();
+      const callArgs = firebase.firestore().collection().add.mock.calls[0][0];
+      expect(callArgs.task).toBe('Complete project');
+    });
+
+    it('should not parse /todo command if no text follows', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      // Should not add task since /todo has no text
+      const { firebase } = require('../firebase');
+      expect(firebase.firestore().collection().add).not.toHaveBeenCalled();
+    });
+
+    it('should handle /todo command with multiple words', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, {
+        target: { value: '/todo Call mom and dad tomorrow' },
+      });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      const { firebase } = require('../firebase');
+      expect(firebase.firestore().collection().add).toHaveBeenCalled();
+      const callArgs = firebase.firestore().collection().add.mock.calls[0][0];
+      expect(callArgs.task).toBe('Call mom and dad tomorrow');
+    });
+
+    it('should treat regular text without /todo as normal task', () => {
+      const { getByTestId, queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: 'Regular task text' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      const { firebase } = require('../firebase');
+      expect(firebase.firestore().collection().add).toHaveBeenCalled();
+      const callArgs = firebase.firestore().collection().add.mock.calls[0][0];
+      expect(callArgs.task).toBe('Regular task text');
+    });
+  });
 });
