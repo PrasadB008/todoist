@@ -392,7 +392,127 @@ describe('<AddTask />', () => {
       });
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
-      fireEvent.click(queryByTestId('add-task'));
-    });
-  });
+       fireEvent.click(queryByTestId('add-task'));
+     });
+
+     it('adds a task using /todo slash command', async () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo Buy groceries' },
+       });
+
+       // The input should remain empty since the slash command was processed
+       expect(queryByTestId('add-task-content').value).toBe('');
+     });
+
+     it('adds a task using /todo slash command with TODAY project', async () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: 'TODAY',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo Complete project' },
+       });
+
+       // The input should remain empty since the slash command was processed
+       expect(queryByTestId('add-task-content').value).toBe('');
+     });
+
+     it('does not add a task with /todo slash command if text is empty', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo ' },
+       });
+
+       // Input should contain '/todo ' since no text was provided after the command
+       expect(queryByTestId('add-task-content').value).toBe('/todo ');
+     });
+
+     it('does not add a task with /todo slash command if text is only whitespace', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo    ' },
+       });
+
+       // Input should contain '/todo    ' since only whitespace was provided
+       expect(queryByTestId('add-task-content').value).toBe('/todo    ');
+     });
+
+     it('allows normal text input that does not start with /todo', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: 'Normal task text' },
+       });
+
+       // Input should contain the normal text
+       expect(queryByTestId('add-task-content').value).toBe('Normal task text');
+     });
+   });
 });
