@@ -13,10 +13,13 @@ export const generatePushId = (() => {
   const PUSH_CHARS =
     '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
 
+  let lastPushTime = 0;
   const lastRandChars = [];
 
   return function() {
     let now = new Date().getTime();
+    const duplicateTime = now === lastPushTime;
+    lastPushTime = now;
 
     const timeStampChars = new Array(8);
     for (var i = 7; i >= 0; i--) {
@@ -26,8 +29,21 @@ export const generatePushId = (() => {
 
     let id = timeStampChars.join('');
 
+    if (!duplicateTime) {
+      for (i = 0; i < 12; i++) {
+        lastRandChars[i] = Math.floor(Math.random() * 64);
+      }
+    } else {
+      // Same millisecond as the previous id: increment the random part so
+      // ids keep sorting in creation order.
+      for (i = 11; i >= 0 && lastRandChars[i] === 63; i--) {
+        lastRandChars[i] = 0;
+      }
+      lastRandChars[i]++;
+    }
+
     for (i = 0; i < 12; i++) {
-      id += PUSH_CHARS.charAt(Math.floor(Math.random() * 64));
+      id += PUSH_CHARS.charAt(lastRandChars[i]);
     }
 
     return id;

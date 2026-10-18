@@ -90,5 +90,54 @@ describe('helpers', () => {
 
       expect(earlier < later).toBe(true);
     });
+
+    it('uses Math.random for the 12 random characters', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(5000000);
+      const random = jest.spyOn(Math, 'random');
+
+      random.mockReturnValue(0);
+      expect(generatePushId().slice(8)).toBe('-'.repeat(12));
+
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(5000001);
+      random.mockReturnValue(0.999);
+      expect(generatePushId().slice(8)).toBe('z'.repeat(12));
+    });
+
+    it('generates different random parts at different times', () => {
+      const spy = jest.spyOn(Date.prototype, 'getTime');
+      spy.mockReturnValue(6000000);
+      const first = generatePushId();
+      spy.mockReturnValue(6000001);
+      const second = generatePushId();
+
+      expect(first.slice(8)).not.toBe(second.slice(8));
+    });
+
+    it('keeps ids unique and ordered within the same millisecond', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(7000000);
+      jest.spyOn(Math, 'random').mockReturnValue(0);
+
+      const first = generatePushId();
+      const second = generatePushId();
+      const third = generatePushId();
+
+      expect(first.slice(0, 8)).toBe(second.slice(0, 8));
+      expect(new Set([first, second, third]).size).toBe(3);
+      expect(first < second).toBe(true);
+      expect(second < third).toBe(true);
+    });
+
+    it('carries over when the last random character overflows', () => {
+      jest.spyOn(Date.prototype, 'getTime').mockReturnValue(8000000);
+      const random = jest.spyOn(Math, 'random').mockReturnValue(0);
+      for (let i = 0; i < 11; i++) random.mockReturnValueOnce(0.5);
+      random.mockReturnValueOnce(0.999);
+
+      const first = generatePushId();
+      const second = generatePushId();
+
+      expect(first.slice(8)).toBe(`${'V'.repeat(11)}z`);
+      expect(second.slice(8)).toBe(`${'V'.repeat(10)}W-`);
+    });
   });
 });
