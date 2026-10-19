@@ -354,45 +354,105 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
 
-    it('renders <AddTask /> and adds a task with a task date of NEXT_7', () => {
-      useSelectedProjectValue.mockImplementation(() => ({
-        selectedProject: '1',
-      }));
+     it('renders <AddTask /> and adds a task with a task date of NEXT_7', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
-      fireEvent.click(queryByTestId('show-main-action'));
-      expect(queryByTestId('add-task-content')).toBeTruthy();
-      expect(queryByTestId('add-task-main')).toBeTruthy();
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+       expect(queryByTestId('add-task-main')).toBeTruthy();
 
-      fireEvent.change(queryByTestId('add-task-content'), {
-        target: { value: 'I am the most amazing task ever!' },
-      });
-      expect(queryByTestId('add-task-content').value).toBe(
-        'I am the most amazing task ever!'
-      );
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: 'I am the most amazing task ever!' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         'I am the most amazing task ever!'
+       );
 
-      fireEvent.click(queryByTestId('show-task-date-overlay'));
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+       fireEvent.click(queryByTestId('show-task-date-overlay'));
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
 
-      fireEvent.click(queryByTestId('task-date-next-week'));
-      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+       fireEvent.click(queryByTestId('task-date-next-week'));
+       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
-      fireEvent.click(queryByTestId('show-task-date-overlay'));
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+       fireEvent.click(queryByTestId('show-task-date-overlay'));
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
 
-      fireEvent.keyDown(queryByTestId('task-date-next-week'), {
-        key: 'a',
-        code: 65,
-      });
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+       fireEvent.keyDown(queryByTestId('task-date-next-week'), {
+         key: 'a',
+         code: 65,
+       });
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
 
-      fireEvent.keyDown(queryByTestId('task-date-next-week'), {
-        key: 'Enter',
-        code: 13,
-      });
-      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+       fireEvent.keyDown(queryByTestId('task-date-next-week'), {
+         key: 'Enter',
+         code: 13,
+       });
+       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
-      fireEvent.click(queryByTestId('add-task'));
-    });
-  });
+       fireEvent.click(queryByTestId('add-task'));
+     });
+
+     it('handles /todo slash command and extracts task text', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo Buy groceries' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe('Buy groceries');
+     });
+
+     it('handles /todo slash command with extra spaces', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo   Complete project report' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe('Complete project report');
+     });
+
+     it('does not process /todo if no text follows', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo ' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe('/todo ');
+     });
+
+     it('does not process /todo if it does not start with /todo', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: 'This is /todo not at start' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe('This is /todo not at start');
+     });
+   });
 });
