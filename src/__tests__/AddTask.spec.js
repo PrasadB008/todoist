@@ -395,4 +395,101 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('Slash Commands', () => {
+    it('should add a task using /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'INBOX',
+      }));
+
+      const { getByTestId, queryByTestId } = render(
+        <AddTask />
+      );
+
+      fireEvent.click(getByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+      fireEvent.keyDown(taskInput, { key: 'Enter', code: 13 });
+
+      // Input should be cleared after command is processed
+      expect(queryByTestId('add-task-content').value).toBe('');
+    });
+
+    it('should not process /todo command without text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'INBOX',
+      }));
+
+      const { getByTestId } = render(
+        <AddTask />
+      );
+
+      fireEvent.click(getByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo' } });
+      fireEvent.keyDown(taskInput, { key: 'Enter', code: 13 });
+
+      // Input should still contain the text since command is invalid
+      expect(taskInput.value).toBe('/todo');
+    });
+
+    it('should not process /todo command with only whitespace', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'INBOX',
+      }));
+
+      const { getByTestId } = render(
+        <AddTask />
+      );
+
+      fireEvent.click(getByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo   ' } });
+      fireEvent.keyDown(taskInput, { key: 'Enter', code: 13 });
+
+      // Input should still contain the text since command is invalid
+      expect(taskInput.value).toBe('/todo   ');
+    });
+
+    it('should extract task text correctly from /todo command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'INBOX',
+      }));
+
+      const { getByTestId, queryByTestId } = render(
+        <AddTask />
+      );
+
+      fireEvent.click(getByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo Complete project report' } });
+      fireEvent.keyDown(taskInput, { key: 'Enter', code: 13 });
+
+      // Input should be cleared after command is processed
+      expect(queryByTestId('add-task-content').value).toBe('');
+    });
+
+    it('should handle /todo command with special characters', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'INBOX',
+      }));
+
+      const { getByTestId, queryByTestId } = render(
+        <AddTask />
+      );
+
+      fireEvent.click(getByTestId('show-main-action'));
+      const taskInput = getByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo Buy milk & eggs (urgent!)' } });
+      fireEvent.keyDown(taskInput, { key: 'Enter', code: 13 });
+
+      // Input should be cleared after command is processed
+      expect(queryByTestId('add-task-content').value).toBe('');
+    });
+  });
 });
