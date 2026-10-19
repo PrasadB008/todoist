@@ -23,9 +23,14 @@ export const AddTask = ({
   const { selectedProject } = useSelectedProjectValue();
 
   const parseSlashCommand = (input) => {
-    const todoMatch = input.match(/^\/todo\s+(.+)$/);
-    if (todoMatch) {
-      return { command: 'todo', text: todoMatch[1] };
+    // Check if input starts with /todo
+    if (input.startsWith('/todo')) {
+      const todoMatch = input.match(/^\/todo\s+(.+)$/);
+      if (todoMatch) {
+        return { command: 'todo', text: todoMatch[1] };
+      }
+      // /todo without text is invalid
+      return { command: 'todo', text: null };
     }
     return null;
   };
@@ -37,8 +42,14 @@ export const AddTask = ({
 
     // Check for slash commands
     const slashCommand = parseSlashCommand(task);
-    if (slashCommand && slashCommand.command === 'todo') {
-      taskText = slashCommand.text;
+    if (slashCommand) {
+      if (slashCommand.command === 'todo') {
+        // If /todo command has no text, don't add the task
+        if (!slashCommand.text) {
+          return false;
+        }
+        taskText = slashCommand.text;
+      }
     }
 
     if (projectId === 'TODAY') {
