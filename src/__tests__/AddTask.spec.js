@@ -395,4 +395,63 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('slash commands', () => {
+    test('should handle /todo slash command and extract task text', () => {
+      const { queryByTestId } = render(
+        <AddTask showAddTaskMain={true} shouldShowMain={false} />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Buy groceries' } });
+      expect(input.value).toBe('Buy groceries');
+    });
+
+    test('should handle /todo slash command with multiple words', () => {
+      const { queryByTestId } = render(
+        <AddTask showAddTaskMain={true} shouldShowMain={false} />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, {
+        target: { value: '/todo Complete project documentation and review' },
+      });
+      expect(input.value).toBe('Complete project documentation and review');
+    });
+
+    test('should not process /todo without text', () => {
+      const { queryByTestId } = render(
+        <AddTask showAddTaskMain={true} shouldShowMain={false} />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo' } });
+      expect(input.value).toBe('/todo');
+    });
+
+    test('should not process /todo with only whitespace', () => {
+      const { queryByTestId } = render(
+        <AddTask showAddTaskMain={true} shouldShowMain={false} />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo   ' } });
+      expect(input.value).toBe('/todo   ');
+    });
+
+    test('should not process other slash commands', () => {
+      const { queryByTestId } = render(
+        <AddTask showAddTaskMain={true} shouldShowMain={false} />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/other command' } });
+      expect(input.value).toBe('/other command');
+    });
+  });
 });
