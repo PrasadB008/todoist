@@ -394,5 +394,89 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('renders <AddTask /> and adds a task using /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy groceries'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('renders <AddTask /> and adds a task with /todo slash command and date', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete project report' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete project report'
+      );
+
+      fireEvent.click(queryByTestId('show-task-date-overlay'));
+      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+
+      fireEvent.click(queryByTestId('task-date-today'));
+      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('renders <AddTask /> and does not add a task with /todo slash command but no text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('renders <AddTask /> and adds a task with /todo slash command with multiple spaces', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo   Multiple   spaces   task' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo   Multiple   spaces   task'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
   });
 });
