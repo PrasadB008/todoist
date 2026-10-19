@@ -22,6 +22,16 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const handleSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      const taskText = todoMatch[1];
+      setTask(taskText);
+      return true;
+    }
+    return false;
+  };
+
   const addTask = () => {
     const projectId = project || selectedProject;
     let collatedDate = '';
@@ -123,6 +133,11 @@ export const AddTask = ({
             type="text"
             value={task}
             onChange={(e) => setTask(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSlashCommand(task);
+              }
+            }}
           />
           <button
             type="button"
