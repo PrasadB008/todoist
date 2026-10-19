@@ -54,6 +54,20 @@ export const AddTask = ({
     );
   };
 
+  const handleTaskInputChange = (e) => {
+    const value = e.target.value;
+    
+    // Check if the input starts with /todo command
+    if (value.startsWith('/todo ')) {
+      const taskText = value.slice(6); // Remove '/todo ' prefix
+      if (taskText.trim()) {
+        setTask(taskText);
+      }
+    } else {
+      setTask(value);
+    }
+  };
+
   return (
     <div
       className={showQuickAddTask ? 'add-task add-task__overlay' : 'add-task'}
@@ -122,7 +136,7 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={handleTaskInputChange}
           />
           <button
             type="button"

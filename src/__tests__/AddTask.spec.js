@@ -395,4 +395,58 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('slash commands', () => {
+    it('should process /todo command and extract task text', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+
+      expect(taskInput.value).toBe('Buy groceries');
+    });
+
+    it('should process /todo command with multiple words', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, {
+        target: { value: '/todo Complete project report and send to manager' },
+      });
+
+      expect(taskInput.value).toBe('Complete project report and send to manager');
+    });
+
+    it('should not process /todo command if no text follows', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo ' } });
+
+      expect(taskInput.value).toBe('');
+    });
+
+    it('should handle /todo command with leading/trailing spaces', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo   Task with spaces  ' } });
+
+      expect(taskInput.value).toBe('  Task with spaces  ');
+    });
+
+    it('should allow normal text input without /todo command', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: 'Regular task without command' } });
+
+      expect(taskInput.value).toBe('Regular task without command');
+    });
+  });
 });
