@@ -395,4 +395,109 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('Slash Commands', () => {
+    it('parses /todo command and extracts task text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+      expect(taskInput.value).toBe('Buy groceries');
+    });
+
+    it('parses /todo command with multiple words', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+
+      fireEvent.change(taskInput, {
+        target: { value: '/todo Complete project report by Friday' },
+      });
+      expect(taskInput.value).toBe('Complete project report by Friday');
+    });
+
+    it('does not parse /todo command without text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo' } });
+      expect(taskInput.value).toBe('/todo');
+    });
+
+    it('does not parse /todo command with only whitespace', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/todo   ' } });
+      expect(taskInput.value).toBe('/todo   ');
+    });
+
+    it('ignores unknown slash commands', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: '/unknown some text' } });
+      expect(taskInput.value).toBe('/unknown some text');
+    });
+
+    it('allows regular text input without slash commands', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+
+      fireEvent.change(taskInput, { target: { value: 'Regular task text' } });
+      expect(taskInput.value).toBe('Regular task text');
+    });
+
+    it('adds task with /todo command text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      const taskInput = queryByTestId('add-task-content');
+      const addTaskButton = queryByTestId('add-task');
+
+      fireEvent.change(taskInput, { target: { value: '/todo Buy milk' } });
+      fireEvent.click(addTaskButton);
+
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+  });
 });

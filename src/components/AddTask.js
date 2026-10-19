@@ -22,6 +22,14 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const parseSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(\S.*)$/);
+    if (todoMatch) {
+      return { command: 'todo', text: todoMatch[1] };
+    }
+    return null;
+  };
+
   const addTask = () => {
     const projectId = project || selectedProject;
     let collatedDate = '';
@@ -52,6 +60,17 @@ export const AddTask = ({
           setShowProjectOverlay(false);
         })
     );
+  };
+
+  const handleTaskInputChange = (e) => {
+    const input = e.target.value;
+    const slashCommand = parseSlashCommand(input);
+
+    if (slashCommand && slashCommand.command === 'todo') {
+      setTask(slashCommand.text);
+    } else {
+      setTask(input);
+    }
   };
 
   return (
@@ -122,7 +141,7 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={handleTaskInputChange}
           />
           <button
             type="button"
