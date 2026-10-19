@@ -394,5 +394,104 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('renders <AddTask /> and adds a task using /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy groceries'
+      );
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+    });
+
+    it('renders <AddTask /> and does not add a task with /todo command if no text after /todo', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo ');
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      // Task should not be added since there's no text after /todo
+      expect(queryByTestId('add-task-content').value).toBe('/todo ');
+    });
+
+    it('renders <AddTask /> and does not trigger /todo command with regular Enter key', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: 'Regular task' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('Regular task');
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      // Regular task should still be in the input (slash command not triggered)
+      expect(queryByTestId('add-task-content').value).toBe('Regular task');
+    });
+
+    it('renders <AddTask /> and adds a task using /todo slash command with quick add task', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const setShowQuickAddTask = jest.fn();
+      const { queryByTestId } = render(
+        <AddTask
+          showAddTaskMain
+          shouldShowMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Quick task' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo Quick task');
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+    });
   });
 });
