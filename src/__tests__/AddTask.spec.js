@@ -395,4 +395,117 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('slash commands', () => {
+    it('should handle /todo slash command and extract task text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe('/todo Buy groceries');
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+
+    it('should not process /todo command if no text follows', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+
+    it('should extract text after /todo command correctly', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete project report by Friday' },
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete project report by Friday'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+
+    it('should handle /todo command with multiple spaces', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo   Task with multiple spaces' },
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo   Task with multiple spaces'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+  });
 });
