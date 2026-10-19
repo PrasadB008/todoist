@@ -354,45 +354,147 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
 
-    it('renders <AddTask /> and adds a task with a task date of NEXT_7', () => {
+     it('renders <AddTask /> and adds a task with a task date of NEXT_7', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+       expect(queryByTestId('add-task-main')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: 'I am the most amazing task ever!' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         'I am the most amazing task ever!'
+       );
+
+       fireEvent.click(queryByTestId('show-task-date-overlay'));
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
+
+       fireEvent.click(queryByTestId('task-date-next-week'));
+       expect(queryByTestId('task-date-overlay')).toBeFalsy();
+
+       fireEvent.click(queryByTestId('show-task-date-overlay'));
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
+
+       fireEvent.keyDown(queryByTestId('task-date-next-week'), {
+         key: 'a',
+         code: 65,
+       });
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
+
+       fireEvent.keyDown(queryByTestId('task-date-next-week'), {
+         key: 'Enter',
+         code: 13,
+       });
+       expect(queryByTestId('task-date-overlay')).toBeFalsy();
+
+       fireEvent.click(queryByTestId('add-task'));
+     });
+
+    it('renders <AddTask /> and adds a task using /todo slash command', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
-      fireEvent.click(queryByTestId('show-main-action'));
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
       expect(queryByTestId('add-task-content')).toBeTruthy();
-      expect(queryByTestId('add-task-main')).toBeTruthy();
 
       fireEvent.change(queryByTestId('add-task-content'), {
-        target: { value: 'I am the most amazing task ever!' },
+        target: { value: '/todo Buy groceries' },
       });
       expect(queryByTestId('add-task-content').value).toBe(
-        'I am the most amazing task ever!'
+        '/todo Buy groceries'
       );
 
-      fireEvent.click(queryByTestId('show-task-date-overlay'));
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
 
-      fireEvent.click(queryByTestId('task-date-next-week'));
-      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+    it('renders <AddTask /> and adds a task using /todo slash command with multiple words', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
 
-      fireEvent.click(queryByTestId('show-task-date-overlay'));
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      expect(queryByTestId('add-task-content')).toBeTruthy();
 
-      fireEvent.keyDown(queryByTestId('task-date-next-week'), {
-        key: 'a',
-        code: 65,
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete the project report by Friday' },
       });
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
-
-      fireEvent.keyDown(queryByTestId('task-date-next-week'), {
-        key: 'Enter',
-        code: 13,
-      });
-      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete the project report by Friday'
+      );
 
       fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
-  });
+
+    it('renders <AddTask /> and does not add a task with /todo but no text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+    });
+
+    it('renders <AddTask /> and adds a task with /todo slash command and custom project', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Call the dentist' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Call the dentist'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+   });
 });
