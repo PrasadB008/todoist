@@ -354,45 +354,147 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
 
-    it('renders <AddTask /> and adds a task with a task date of NEXT_7', () => {
-      useSelectedProjectValue.mockImplementation(() => ({
-        selectedProject: '1',
-      }));
+     it('renders <AddTask /> and adds a task with a task date of NEXT_7', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
-      fireEvent.click(queryByTestId('show-main-action'));
-      expect(queryByTestId('add-task-content')).toBeTruthy();
-      expect(queryByTestId('add-task-main')).toBeTruthy();
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+       expect(queryByTestId('add-task-main')).toBeTruthy();
 
-      fireEvent.change(queryByTestId('add-task-content'), {
-        target: { value: 'I am the most amazing task ever!' },
-      });
-      expect(queryByTestId('add-task-content').value).toBe(
-        'I am the most amazing task ever!'
-      );
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: 'I am the most amazing task ever!' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         'I am the most amazing task ever!'
+       );
 
-      fireEvent.click(queryByTestId('show-task-date-overlay'));
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+       fireEvent.click(queryByTestId('show-task-date-overlay'));
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
 
-      fireEvent.click(queryByTestId('task-date-next-week'));
-      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+       fireEvent.click(queryByTestId('task-date-next-week'));
+       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
-      fireEvent.click(queryByTestId('show-task-date-overlay'));
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+       fireEvent.click(queryByTestId('show-task-date-overlay'));
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
 
-      fireEvent.keyDown(queryByTestId('task-date-next-week'), {
-        key: 'a',
-        code: 65,
-      });
-      expect(queryByTestId('task-date-overlay')).toBeTruthy();
+       fireEvent.keyDown(queryByTestId('task-date-next-week'), {
+         key: 'a',
+         code: 65,
+       });
+       expect(queryByTestId('task-date-overlay')).toBeTruthy();
 
-      fireEvent.keyDown(queryByTestId('task-date-next-week'), {
-        key: 'Enter',
-        code: 13,
-      });
-      expect(queryByTestId('task-date-overlay')).toBeFalsy();
+       fireEvent.keyDown(queryByTestId('task-date-next-week'), {
+         key: 'Enter',
+         code: 13,
+       });
+       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
-      fireEvent.click(queryByTestId('add-task'));
-    });
-  });
+       fireEvent.click(queryByTestId('add-task'));
+     });
+
+     it('renders <AddTask /> and adds a task using /todo slash command', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo Buy groceries' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         '/todo Buy groceries'
+       );
+
+       fireEvent.click(queryByTestId('add-task'));
+       expect(setShowQuickAddTask).toHaveBeenCalled();
+     });
+
+     it('renders <AddTask /> and /todo slash command extracts task text correctly', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo Complete project documentation' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         '/todo Complete project documentation'
+       );
+
+       fireEvent.click(queryByTestId('add-task'));
+       expect(setShowQuickAddTask).toHaveBeenCalled();
+     });
+
+     it('renders <AddTask /> and /todo slash command with multiple words', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: 'TODAY',
+       }));
+
+       const showQuickAddTask = true;
+       const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+       const { queryByTestId } = render(
+         <AddTask
+           showQuickAddTask={showQuickAddTask}
+           setShowQuickAddTask={setShowQuickAddTask}
+         />
+       );
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/todo Call mom and dad this weekend' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         '/todo Call mom and dad this weekend'
+       );
+
+       fireEvent.click(queryByTestId('add-task'));
+       expect(setShowQuickAddTask).toHaveBeenCalled();
+     });
+
+     it('renders <AddTask /> and does not process invalid slash commands', () => {
+       useSelectedProjectValue.mockImplementation(() => ({
+         selectedProject: '1',
+       }));
+
+       const { queryByTestId } = render(<AddTask showMain />);
+       fireEvent.click(queryByTestId('show-main-action'));
+       expect(queryByTestId('add-task-content')).toBeTruthy();
+
+       fireEvent.change(queryByTestId('add-task-content'), {
+         target: { value: '/invalid command' },
+       });
+       expect(queryByTestId('add-task-content').value).toBe(
+         '/invalid command'
+       );
+
+       fireEvent.click(queryByTestId('add-task'));
+       // The task should not be added because /invalid is not a recognized command
+       // and the input is not a valid task
+     });
+   });
 });
