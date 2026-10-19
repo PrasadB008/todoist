@@ -394,5 +394,87 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('handles /todo slash command and extracts task text', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(input.value).toBe('/todo Buy groceries');
+
+      fireEvent.keyDown(input, {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(input.value).toBe('Buy groceries');
+    });
+
+    it('handles /todo slash command with multiple words', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, {
+        target: { value: '/todo Complete the project report by Friday' },
+      });
+
+      fireEvent.keyDown(input, {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(input.value).toBe('Complete the project report by Friday');
+    });
+
+    it('does not process /todo command if not at start of input', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, {
+        target: { value: 'Some text /todo Buy groceries' },
+      });
+
+      fireEvent.keyDown(input, {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(input.value).toBe('Some text /todo Buy groceries');
+    });
+
+    it('does not process /todo command without text after it', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, {
+        target: { value: '/todo' },
+      });
+
+      fireEvent.keyDown(input, {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(input.value).toBe('/todo');
+    });
+
+    it('does not process /todo command with only whitespace after it', () => {
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const input = queryByTestId('add-task-content');
+      fireEvent.change(input, {
+        target: { value: '/todo   ' },
+      });
+
+      fireEvent.keyDown(input, {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(input.value).toBe('/todo   ');
+    });
   });
 });
