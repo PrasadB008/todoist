@@ -395,4 +395,66 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('slash commands', () => {
+    it('should handle /todo slash command and extract task text', () => {
+      const { getByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(getByTestId('show-main-action'));
+      expect(getByTestId('add-task-main')).toBeTruthy();
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Buy groceries' } });
+
+      expect(input.value).toBe('/todo Buy groceries');
+    });
+
+    it('should extract task text from /todo command', () => {
+      const { getByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(getByTestId('show-main-action'));
+      expect(getByTestId('add-task-main')).toBeTruthy();
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Complete project report' } });
+
+      expect(input.value).toBe('/todo Complete project report');
+    });
+
+    it('should handle /todo command with multiple words', () => {
+      const { getByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(getByTestId('show-main-action'));
+      expect(getByTestId('add-task-main')).toBeTruthy();
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Call mom and dad tomorrow' } });
+
+      expect(input.value).toBe('/todo Call mom and dad tomorrow');
+    });
+
+    it('should not process invalid slash commands', () => {
+      const { getByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(getByTestId('show-main-action'));
+      expect(getByTestId('add-task-main')).toBeTruthy();
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/invalid command' } });
+
+      expect(input.value).toBe('/invalid command');
+    });
+
+    it('should handle /todo command with special characters', () => {
+      const { getByTestId } = render(<AddTask showAddTaskMain />);
+
+      fireEvent.click(getByTestId('show-main-action'));
+      expect(getByTestId('add-task-main')).toBeTruthy();
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Buy milk & eggs (2x)' } });
+
+      expect(input.value).toBe('/todo Buy milk & eggs (2x)');
+    });
+  });
 });
