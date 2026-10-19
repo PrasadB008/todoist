@@ -22,9 +22,18 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const handleSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      return todoMatch[1];
+    }
+    return null;
+  };
+
   const addTask = () => {
     const projectId = project || selectedProject;
     let collatedDate = '';
+    let taskText = task;
 
     if (projectId === 'TODAY') {
       collatedDate = moment().format('DD/MM/YYYY');
@@ -33,7 +42,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      taskText &&
       projectId &&
       firebase
         .firestore()
@@ -41,7 +50,7 @@ export const AddTask = ({
         .add({
           archived: false,
           projectId,
-          task,
+          task: taskText,
           date: collatedDate || taskDate,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
@@ -52,6 +61,46 @@ export const AddTask = ({
           setShowProjectOverlay(false);
         })
     );
+  };
+
+  const handleTaskInputChange = (e) => {
+    const input = e.target.value;
+    const slashCommandResult = handleSlashCommand(input);
+
+    if (slashCommandResult !== null) {
+      // Slash command detected, extract the text and add the task
+      setTask(slashCommandResult);
+      // Trigger task addition after state update
+      setTimeout(() => {
+        const projectId = project || selectedProject;
+        let collatedDate = '';
+
+        if (projectId === 'TODAY') {
+          collatedDate = moment().format('DD/MM/YYYY');
+        } else if (projectId === 'NEXT_7') {
+          collatedDate = moment().add(7, 'days').format('DD/MM/YYYY');
+        }
+
+        firebase
+          .firestore()
+          .collection('tasks')
+          .add({
+            archived: false,
+            projectId,
+            task: slashCommandResult,
+            date: collatedDate || taskDate,
+            userId: 'jlIFXIwyAL3tzHMtzRbw',
+          })
+          .then(() => {
+            setTask('');
+            setProject('');
+            setShowMain('');
+            setShowProjectOverlay(false);
+          });
+      }, 0);
+    } else {
+      setTask(input);
+    }
   };
 
   return (
@@ -122,7 +171,7 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={handleTaskInputChange}
           />
           <button
             type="button"
