@@ -395,4 +395,101 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('Slash Commands', () => {
+    it('should parse /todo command and extract task text', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          setShowMain={jest.fn()}
+          setProject={jest.fn()}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Buy groceries' } });
+
+      expect(input.value).toBe('Buy groceries');
+    });
+
+    it('should handle /todo command with multiple words', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          setShowMain={jest.fn()}
+          setProject={jest.fn()}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Complete project report by Friday' } });
+
+      expect(input.value).toBe('Complete project report by Friday');
+    });
+
+    it('should not parse /todo command if no text follows', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          setShowMain={jest.fn()}
+          setProject={jest.fn()}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo' } });
+
+      expect(input.value).toBe('/todo');
+    });
+
+    it('should not parse /todo command if only whitespace follows', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          setShowMain={jest.fn()}
+          setProject={jest.fn()}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo   ' } });
+
+      expect(input.value).toBe('/todo   ');
+    });
+
+    it('should handle regular text without slash command', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          setShowMain={jest.fn()}
+          setProject={jest.fn()}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: 'Regular task text' } });
+
+      expect(input.value).toBe('Regular task text');
+    });
+  });
 });
