@@ -398,15 +398,12 @@ describe('<AddTask />', () => {
 
   describe('Slash Commands', () => {
     it('should parse /todo command and extract task text', () => {
+      const setShowQuickAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
-          project="INBOX"
-          selectedProject="INBOX"
-          showAddTask
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-          setProject={jest.fn()}
+          showAddTaskMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
         />
       );
 
@@ -417,15 +414,12 @@ describe('<AddTask />', () => {
     });
 
     it('should handle /todo command with multiple words', () => {
+      const setShowQuickAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
-          project="INBOX"
-          selectedProject="INBOX"
-          showAddTask
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-          setProject={jest.fn()}
+          showAddTaskMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
         />
       );
 
@@ -436,15 +430,12 @@ describe('<AddTask />', () => {
     });
 
     it('should not parse /todo command if no text follows', () => {
+      const setShowQuickAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
-          project="INBOX"
-          selectedProject="INBOX"
-          showAddTask
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-          setProject={jest.fn()}
+          showAddTaskMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
         />
       );
 
@@ -455,15 +446,12 @@ describe('<AddTask />', () => {
     });
 
     it('should not parse /todo command if only whitespace follows', () => {
+      const setShowQuickAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
-          project="INBOX"
-          selectedProject="INBOX"
-          showAddTask
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-          setProject={jest.fn()}
+          showAddTaskMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
         />
       );
 
@@ -474,15 +462,12 @@ describe('<AddTask />', () => {
     });
 
     it('should handle regular text without slash command', () => {
+      const setShowQuickAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
-          project="INBOX"
-          selectedProject="INBOX"
-          showAddTask
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-          setProject={jest.fn()}
+          showAddTaskMain={false}
+          showQuickAddTask
+          setShowQuickAddTask={setShowQuickAddTask}
         />
       );
 
