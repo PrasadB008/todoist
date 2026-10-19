@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
+import moment from 'moment';
 import { AddTask } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
@@ -393,6 +394,151 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
+    });
+  });
+
+  describe('Slash Commands', () => {
+    it('should parse /todo command and extract task text', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+
+      expect(taskInput.value).toBe('/todo Buy groceries');
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection).toHaveBeenCalledWith('tasks');
+      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Buy groceries',
+        })
+      );
+    });
+
+    it('should handle /todo command with multiple words', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, {
+        target: { value: '/todo Complete project documentation and review' },
+      });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Complete project documentation and review',
+        })
+      );
+    });
+
+    it('should not process /todo command without text', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      // Should not call add because the parsed text would be empty
+      expect(firebase.firestore().collection().add).not.toHaveBeenCalled();
+    });
+
+    it('should handle /todo command with special characters', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, {
+        target: { value: '/todo Fix bug: @user mentioned issue #123' },
+      });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Fix bug: @user mentioned issue #123',
+        })
+      );
+    });
+
+    it('should clear input after /todo command is processed', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo New task' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(taskInput.value).toBe('');
+    });
+
+    it('should work with /todo command and TODAY project', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo Task for today' } });
+
+      const projectInput = getByTestId('project-input');
+      fireEvent.change(projectInput, { target: { value: 'TODAY' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Task for today',
+          projectId: 'TODAY',
+          date: moment().format('DD/MM/YYYY'),
+        })
+      );
+    });
+
+    it('should work with /todo command and NEXT_7 project', () => {
+      const { getByTestId, queryByTestId } = render(
+        <AddTask showAddTaskMain />
+      );
+
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      const taskInput = getByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo Task for next week' } });
+
+      const projectInput = getByTestId('project-input');
+      fireEvent.change(projectInput, { target: { value: 'NEXT_7' } });
+
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          task: 'Task for next week',
+          projectId: 'NEXT_7',
+          date: moment().add(7, 'days').format('DD/MM/YYYY'),
+        })
+      );
     });
   });
 });
