@@ -449,29 +449,29 @@ describe('<AddTask />', () => {
      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
-    it('renders <AddTask /> and does not add a task with /todo but no text', () => {
-     useSelectedProjectValue.mockImplementation(() => ({
-       selectedProject: '1',
-     }));
+    it('renders <AddTask /> and treats /todo without text as a regular task', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
 
-     const showQuickAddTask = true;
-     const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
-     const { queryByTestId } = render(
-       <AddTask
-         showQuickAddTask={showQuickAddTask}
-         setShowQuickAddTask={setShowQuickAddTask}
-       />
-     );
-     fireEvent.click(queryByTestId('show-main-action'));
-     expect(queryByTestId('add-task-content')).toBeTruthy();
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
 
-     fireEvent.change(queryByTestId('add-task-content'), {
-       target: { value: '/todo' },
-     });
-     expect(queryByTestId('add-task-content').value).toBe('/todo');
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
 
-     fireEvent.click(queryByTestId('add-task'));
-     expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
     it('renders <AddTask /> and adds a task with /todo slash command to TODAY', () => {
