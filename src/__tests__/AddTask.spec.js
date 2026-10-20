@@ -398,102 +398,60 @@ describe('<AddTask />', () => {
 
   describe('Slash Commands', () => {
     it('should parse /todo command and extract task text', () => {
-      const { getByTestId } = render(
-        <AddTask
-          project="INBOX"
-          showAddTask={true}
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-        />
-      );
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
 
-      const input = getByTestId('add-task-content');
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo Buy groceries' } });
 
       expect(input.value).toBe('Buy groceries');
     });
 
     it('should not parse /todo command if no text follows', () => {
-      const { getByTestId } = render(
-        <AddTask
-          project="INBOX"
-          showAddTask={true}
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-        />
-      );
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
 
-      const input = getByTestId('add-task-content');
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo' } });
 
       expect(input.value).toBe('/todo');
     });
 
     it('should not parse /todo command if only whitespace follows', () => {
-      const { getByTestId } = render(
-        <AddTask
-          project="INBOX"
-          showAddTask={true}
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-        />
-      );
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
 
-      const input = getByTestId('add-task-content');
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo   ' } });
 
       expect(input.value).toBe('/todo   ');
     });
 
     it('should handle /todo command with multiple words', () => {
-      const { getByTestId } = render(
-        <AddTask
-          project="INBOX"
-          showAddTask={true}
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-        />
-      );
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
 
-      const input = getByTestId('add-task-content');
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo Complete project report and send to manager' } });
 
       expect(input.value).toBe('Complete project report and send to manager');
     });
 
     it('should handle /todo command with special characters', () => {
-      const { getByTestId } = render(
-        <AddTask
-          project="INBOX"
-          showAddTask={true}
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-        />
-      );
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
 
-      const input = getByTestId('add-task-content');
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo Buy milk @ $5.99 (2% off)' } });
 
       expect(input.value).toBe('Buy milk @ $5.99 (2% off)');
     });
 
     it('should not parse text that contains /todo but does not start with it', () => {
-      const { getByTestId } = render(
-        <AddTask
-          project="INBOX"
-          showAddTask={true}
-          showProjectOverlay={false}
-          setShowProjectOverlay={jest.fn()}
-          setShowMain={jest.fn()}
-        />
-      );
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
 
-      const input = getByTestId('add-task-content');
+      fireEvent.click(queryByTestId('show-main-action'));
+      const input = queryByTestId('add-task-content');
       fireEvent.change(input, { target: { value: 'Remember to /todo this later' } });
 
       expect(input.value).toBe('Remember to /todo this later');
