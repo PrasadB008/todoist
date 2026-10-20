@@ -25,7 +25,8 @@ export const AddTask = ({
   const handleSlashCommand = (input) => {
     const todoMatch = input.match(/^\/todo\s+(.+)$/);
     if (todoMatch) {
-      return todoMatch[1];
+      const text = todoMatch[1].trim();
+      return text || null;
     }
     return null;
   };
@@ -39,6 +40,9 @@ export const AddTask = ({
     const slashCommandText = handleSlashCommand(task);
     if (slashCommandText) {
       taskText = slashCommandText;
+    } else if (task.startsWith('/todo')) {
+      // If input starts with /todo but doesn't match the pattern, reject it
+      return false;
     }
 
     if (projectId === 'TODAY') {

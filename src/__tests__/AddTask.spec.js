@@ -497,6 +497,6 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
       expect(setShowQuickAddTask).not.toHaveBeenCalled();
-    });
-    });
-    });
+      });
+      });
+      });
