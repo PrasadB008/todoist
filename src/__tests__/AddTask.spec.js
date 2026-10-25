@@ -394,5 +394,79 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('handles /todo slash command and extracts task text', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('Buy groceries');
+    });
+
+    it('handles /todo slash command with multiple words', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete the project report by Friday' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Complete the project report by Friday'
+      );
+    });
+
+    it('does not process /todo without text', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+    });
+
+    it('does not process /todo with only whitespace', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo   ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo   ');
+    });
+
+    it('does not process text that does not start with /todo', () => {
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: 'This is /todo a task' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('This is /todo a task');
+    });
+
+    it('allows adding a task with /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showAddTaskMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-main')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo My new task' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('My new task');
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
   });
 });
