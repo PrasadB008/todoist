@@ -23,7 +23,7 @@ export const AddTask = ({
   const { selectedProject } = useSelectedProjectValue();
 
   const handleSlashCommand = (input) => {
-    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    const todoMatch = input.match(/^\/todo\s+(\S.*)$/);
     if (todoMatch) {
       return todoMatch[1];
     }
