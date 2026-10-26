@@ -62,6 +62,10 @@ describe('helpers', () => {
 
       expect(averageTaskCount(projects)).toBe(5);
     });
+
+    it('returns 0 for an empty list of projects', () => {
+      expect(averageTaskCount([])).toBe(0);
+    });
   });
 
   describe('firstTaskName', () => {
