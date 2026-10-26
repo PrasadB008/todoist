@@ -260,6 +260,9 @@ header {
           }
 
           &.settings__darkmode {
+            width: auto;
+            padding: 0 6px;
+
             button {
               @include transparent-button();
               color: white;
@@ -267,13 +270,45 @@ header {
               display: -webkit-box;
               display: -ms-flexbox;
               display: flex;
+              align-items: center;
 
               svg {
                 width: 20px;
                 height: 20px;
+                margin-right: 6px;
               }
             }
 
+            .darkmode-switch__track {
+              position: relative;
+              display: inline-block;
+              width: 32px;
+              height: 16px;
+              border-radius: 8px;
+              background-color: rgba(255, 255, 255, 0.35);
+              transition: background-color 150ms ease-in;
+            }
+
+            .darkmode-switch__thumb {
+              position: absolute;
+              top: 2px;
+              left: 2px;
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+              background-color: #fff;
+              transition: transform 150ms ease-in;
+            }
+
+            .darkmode-switch[aria-checked='true'] {
+              .darkmode-switch__track {
+                background-color: #4caf50;
+              }
+
+              .darkmode-switch__thumb {
+                transform: translateX(16px);
+              }
+            }
           }
         }
       }

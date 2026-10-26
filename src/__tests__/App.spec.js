@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { App } from '../App';
 
 beforeEach(cleanup); // clean meeeeeeeeee!
@@ -19,5 +19,21 @@ describe('<App />', () => {
     expect(
       queryByTestId('application').classList.contains('darkmode')
     ).toBeTruthy();
+  });
+
+  it('toggles dark mode on and off with the header switch', () => {
+    const { queryByTestId } = render(<App />);
+    const app = queryByTestId('application');
+    const toggle = queryByTestId('dark-mode-action');
+
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
+
+    fireEvent.click(toggle);
+    expect(app.classList.contains('darkmode')).toBeTruthy();
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+
+    fireEvent.click(toggle);
+    expect(app.classList.contains('darkmode')).toBeFalsy();
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
   });
 });
