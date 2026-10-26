@@ -32,16 +32,10 @@ export const Header = ({ darkMode, setDarkMode }) => {
               <button
                 data-testid="dark-mode-action"
                 aria-label="Darkmode on/off"
-                role="switch"
-                aria-checked={darkMode}
-                className="darkmode-switch"
                 type="button"
                 onClick={() => setDarkMode(!darkMode)}
               >
                 <FaPizzaSlice />
-                <span className="darkmode-switch__track" aria-hidden="true">
-                  <span className="darkmode-switch__thumb" />
-                </span>
               </button>
             </li>
           </ul>
