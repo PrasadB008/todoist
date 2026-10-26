@@ -394,5 +394,91 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('handles /todo slash command to extract task text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy groceries'
+      );
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe('Buy groceries');
+    });
+
+    it('handles /todo slash command with multiple words', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete the project report by Friday' },
+      });
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Complete the project report by Friday'
+      );
+    });
+
+    it('does not process /todo command without text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+    });
+
+    it('does not process non-/todo slash commands', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/other some text' },
+      });
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe('/other some text');
+    });
   });
 });
