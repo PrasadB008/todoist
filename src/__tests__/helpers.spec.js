@@ -62,6 +62,18 @@ describe('helpers', () => {
 
       expect(averageTaskCount(projects)).toBe(2);
     });
+
+    it('returns 0 for an empty list', () => {
+      expect(averageTaskCount([])).toBe(0);
+    });
+
+    it('returns 0 when projects is missing', () => {
+      expect(averageTaskCount(undefined)).toBe(0);
+    });
+
+    it('counts projects without a tasks array as having no tasks', () => {
+      expect(averageTaskCount([{ tasks: [{}, {}] }, { name: 'Home' }])).toBe(1);
+    });
   });
 
   describe('firstTaskName', () => {
@@ -69,6 +81,14 @@ describe('helpers', () => {
       expect(firstTaskName([{ name: 'Write tests' }, { name: 'Ship' }])).toBe(
         'Write tests'
       );
+    });
+
+    it('returns undefined for an empty list', () => {
+      expect(firstTaskName([])).toBeUndefined();
+    });
+
+    it('returns undefined when tasks is missing', () => {
+      expect(firstTaskName(undefined)).toBeUndefined();
     });
   });
 
