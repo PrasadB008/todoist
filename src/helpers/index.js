@@ -11,7 +11,7 @@ export const collatedTasksExist = selectedProject =>
 
 // Returns 0 for a missing or empty `projects` list; projects without a
 // `tasks` array count as having no tasks.
-export const averageTaskCount = projects => {
+export const averageTaskCount = (projects) => {
   if (!projects || projects.length === 0) return 0;
 
   const total = projects.reduce(
@@ -23,7 +23,7 @@ export const averageTaskCount = projects => {
 };
 
 // Returns undefined for a missing or empty `tasks` list.
-export const firstTaskName = tasks =>
+export const firstTaskName = (tasks) =>
   tasks && tasks.length > 0 ? tasks[0].name : undefined;
 
 export const generatePushId = (() => {
