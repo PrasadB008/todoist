@@ -9,7 +9,8 @@ export const getCollatedTitle = (projects, key) =>
 export const collatedTasksExist = selectedProject =>
   collatedTasks.find(task => task.key === selectedProject);
 
-export const averageTaskCount = counts => counts.reduce((a, b) => a + b, 0) / counts.length;
+export const averageTaskCount = (counts) =>
+  counts.reduce((a, b) => a + b, 0) / counts.length;
 
 export const generatePushId = (() => {
   const PUSH_CHARS =
