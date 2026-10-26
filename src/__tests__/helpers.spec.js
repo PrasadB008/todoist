@@ -14,6 +14,11 @@ describe('helpers', () => {
 
       expect(averageTaskCount(projects)).toBe(4);
     });
+
+    it('returns 0 for an empty or missing list', () => {
+      expect(averageTaskCount([])).toBe(0);
+      expect(averageTaskCount(undefined)).toBe(0);
+    });
   });
 
   describe('firstTaskName', () => {
@@ -21,6 +26,11 @@ describe('helpers', () => {
       expect(firstTaskName([{ name: 'Buy milk' }, { name: 'Walk dog' }])).toBe(
         'Buy milk'
       );
+    });
+
+    it('returns undefined for an empty or missing list', () => {
+      expect(firstTaskName([])).toBeUndefined();
+      expect(firstTaskName(undefined)).toBeUndefined();
     });
   });
 
