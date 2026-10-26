@@ -1,4 +1,22 @@
+import moment from 'moment';
 import { collatedTasks } from '../constants';
+
+// Formats a task due date (stored as 'DD/MM/YYYY') for display: "Today",
+// "Tomorrow" or a short date such as "Oct 30". Returns '' when the date is
+// missing or invalid. `now` is injectable to keep the helper testable.
+export const formatDueDate = (date, now = moment()) => {
+  if (!date) return '';
+
+  const due = moment(date, 'DD/MM/YYYY', true);
+  if (!due.isValid()) return '';
+
+  const today = moment(now).startOf('day');
+  const days = due.startOf('day').diff(today, 'days');
+
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Tomorrow';
+  return due.format('MMM D');
+};
 
 export const getTitle = (projects, projectId) =>
   projects.find(project => project.projectId === projectId);

@@ -3,7 +3,12 @@ import { Checkbox } from './Checkbox';
 import { AddTask } from './AddTask';
 import { useTasks } from '../hooks';
 import { collatedTasks } from '../constants';
-import { getTitle, getCollatedTitle, collatedTasksExist } from '../helpers';
+import {
+  getTitle,
+  getCollatedTitle,
+  collatedTasksExist,
+  formatDueDate,
+} from '../helpers';
 import { useSelectedProjectValue, useProjectsValue } from '../context';
 
 export const Tasks = () => {
@@ -39,6 +44,11 @@ export const Tasks = () => {
           <li key={`${task.id}`}>
             <Checkbox id={task.id} taskDesc={task.task} />
             <span>{task.task}</span>
+            {task.date && (
+              <span className="tasks__date" data-testid="task-due-date">
+                {formatDueDate(task.date)}
+              </span>
+            )}
           </li>
         ))}
       </ul>

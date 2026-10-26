@@ -3,9 +3,40 @@ import {
   getCollatedTitle,
   collatedTasksExist,
   generatePushId,
+  formatDueDate,
 } from '../helpers';
 
 describe('helpers', () => {
+  describe('formatDueDate', () => {
+    const now = new Date(2019, 9, 29, 15, 30); // 29 Oct 2019, afternoon
+
+    it('returns "Today" for the current day', () => {
+      expect(formatDueDate('29/10/2019', now)).toBe('Today');
+    });
+
+    it('returns "Tomorrow" for the next day', () => {
+      expect(formatDueDate('30/10/2019', now)).toBe('Tomorrow');
+    });
+
+    it('returns a short date for other days', () => {
+      expect(formatDueDate('31/10/2019', now)).toBe('Oct 31');
+      expect(formatDueDate('28/10/2019', now)).toBe('Oct 28');
+      expect(formatDueDate('05/12/2019', now)).toBe('Dec 5');
+    });
+
+    it('treats tomorrow across a month boundary correctly', () => {
+      const endOfMonth = new Date(2019, 9, 31, 23, 59);
+      expect(formatDueDate('01/11/2019', endOfMonth)).toBe('Tomorrow');
+    });
+
+    it.each([undefined, null, '', 'nonsense', '31/02/2019'])(
+      'returns an empty string for %p',
+      (value) => {
+        expect(formatDueDate(value, now)).toBe('');
+      }
+    );
+  });
+
   describe('getTitle', () => {
     const projects = [
       { projectId: '1', name: 'Work' },
