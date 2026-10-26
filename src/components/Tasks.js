@@ -36,8 +36,7 @@ export const Tasks = () => {
 
       <ul className="tasks__list">
         {tasks.map((task) => {
-          const taskProject =
-            projects && getTitle(projects, task.projectId);
+          const taskProject = projects && getTitle(projects, task.projectId);
 
           return (
             <li key={`${task.id}`}>
