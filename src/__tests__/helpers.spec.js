@@ -31,7 +31,7 @@ describe('helpers', () => {
 
     it.each([undefined, null, '', 'nonsense', '31/02/2019'])(
       'returns an empty string for %p',
-      value => {
+      (value) => {
         expect(formatDueDate(value, now)).toBe('');
       }
     );
