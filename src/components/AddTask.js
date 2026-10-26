@@ -25,7 +25,10 @@ export const AddTask = ({
   const parseSlashCommand = (input) => {
     const todoMatch = input.match(/^\/todo\s+(.+)$/);
     if (todoMatch) {
-      return todoMatch[1];
+      const extractedText = todoMatch[1].trim();
+      if (extractedText) {
+        return extractedText;
+      }
     }
     return null;
   };
