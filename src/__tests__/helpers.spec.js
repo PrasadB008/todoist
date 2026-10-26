@@ -2,6 +2,8 @@ import {
   getTitle,
   getCollatedTitle,
   collatedTasksExist,
+  averageTaskCount,
+  firstTaskName,
   generatePushId,
 } from '../helpers';
 
@@ -51,6 +53,28 @@ describe('helpers', () => {
 
     it('returns undefined for a regular project id', () => {
       expect(collatedTasksExist('1')).toBeUndefined();
+    });
+  });
+
+  describe('averageTaskCount', () => {
+    it('returns the sum divided by the length', () => {
+      expect(averageTaskCount([1, 2, 6])).toBe(3);
+    });
+
+    it('returns 0 for an empty or missing list', () => {
+      expect(averageTaskCount([])).toBe(0);
+      expect(averageTaskCount()).toBe(0);
+    });
+  });
+
+  describe('firstTaskName', () => {
+    it('returns the task of the first item', () => {
+      expect(firstTaskName([{ task: 'A' }, { task: 'B' }])).toBe('A');
+    });
+
+    it('returns undefined for an empty or missing list', () => {
+      expect(firstTaskName([])).toBeUndefined();
+      expect(firstTaskName()).toBeUndefined();
     });
   });
 
