@@ -29,6 +29,24 @@ describe('<Header />', () => {
       expect(setDarkMode).toHaveBeenCalledWith(true);
     });
 
+    it('toggles dark mode on and off with the switch and reflects its state', () => {
+      const Wrapper = () => {
+        const [darkMode, setDarkMode] = React.useState(false);
+        return <Header darkMode={darkMode} setDarkMode={setDarkMode} />;
+      };
+      const { queryByTestId } = render(<Wrapper />);
+      const toggle = queryByTestId('dark-mode-action');
+
+      expect(toggle.getAttribute('role')).toBe('switch');
+      expect(toggle.getAttribute('aria-checked')).toBe('false');
+
+      fireEvent.click(toggle);
+      expect(toggle.getAttribute('aria-checked')).toBe('true');
+
+      fireEvent.click(toggle);
+      expect(toggle.getAttribute('aria-checked')).toBe('false');
+    });
+
     it('renders the header component and set quick add task to true using onClick', () => {
       const darkMode = false;
 
