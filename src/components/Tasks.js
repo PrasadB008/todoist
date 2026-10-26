@@ -35,12 +35,24 @@ export const Tasks = () => {
       <h2 data-testid="project-name">{projectName}</h2>
 
       <ul className="tasks__list">
-        {tasks.map((task) => (
-          <li key={`${task.id}`}>
-            <Checkbox id={task.id} taskDesc={task.task} />
-            <span>{task.task}</span>
-          </li>
-        ))}
+        {tasks.map((task) => {
+          const taskProject = projects && getTitle(projects, task.projectId);
+
+          return (
+            <li key={`${task.id}`}>
+              <Checkbox id={task.id} taskDesc={task.task} />
+              <span>{task.task}</span>
+              {taskProject && (
+                <span
+                  className="tasks__project-label"
+                  data-testid="task-project-label"
+                >
+                  {taskProject.name}
+                </span>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <AddTask />

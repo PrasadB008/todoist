@@ -501,6 +501,18 @@ header {
     list-style-type: none;
     border-bottom: 1px solid #f0f0f0;
 
+    .tasks__project-label {
+      align-self: center;
+      margin-left: 10px;
+      padding: 0 6px;
+      font-size: 11px;
+      line-height: 16px;
+      color: #666;
+      background-color: #f0f0f0;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
     .checkbox-holder {
       margin-right: 20px;
       display: -webkit-box;
