@@ -58,10 +58,7 @@ describe('helpers', () => {
 
   describe('averageTaskCount', () => {
     it('returns the total task count divided by the number of projects', () => {
-      const projects = [
-        { tasks: [{}, {}, {}] },
-        { tasks: [{}] },
-      ];
+      const projects = [{ tasks: [{}, {}, {}] }, { tasks: [{}] }];
 
       expect(averageTaskCount(projects)).toBe(2);
     });
