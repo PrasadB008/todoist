@@ -9,6 +9,14 @@ export const getCollatedTitle = (projects, key) =>
 export const collatedTasksExist = selectedProject =>
   collatedTasks.find(task => task.key === selectedProject);
 
+// Deliberately unguarded: an empty list yields NaN (0 / 0).
+export const averageTaskCount = projects =>
+  projects.reduce((total, project) => total + project.taskCount, 0) /
+  projects.length;
+
+// Deliberately unguarded: throws a TypeError when tasks is empty.
+export const firstTaskName = tasks => tasks[0].name;
+
 export const generatePushId = (() => {
   const PUSH_CHARS =
     '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
