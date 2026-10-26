@@ -74,6 +74,11 @@ describe('helpers', () => {
         'Buy milk'
       );
     });
+
+    it('returns null for an empty or missing list of tasks', () => {
+      expect(firstTaskName([])).toBeNull();
+      expect(firstTaskName(undefined)).toBeNull();
+    });
   });
 
   describe('generatePushId', () => {

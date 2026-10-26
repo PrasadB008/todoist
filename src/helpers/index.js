@@ -16,8 +16,9 @@ export const averageTaskCount = (projects) =>
     : projects.reduce((total, project) => total + project.taskCount, 0) /
       projects.length;
 
-// Deliberately unguarded: throws a TypeError when tasks is empty.
-export const firstTaskName = (tasks) => tasks[0].name;
+// Returns null when tasks is empty or missing.
+export const firstTaskName = (tasks) =>
+  tasks && tasks.length > 0 ? tasks[0].name : null;
 
 export const generatePushId = (() => {
   const PUSH_CHARS =
