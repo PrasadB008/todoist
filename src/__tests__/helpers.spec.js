@@ -3,9 +3,27 @@ import {
   getCollatedTitle,
   collatedTasksExist,
   generatePushId,
+  averageTaskCount,
+  firstTaskName,
 } from '../helpers';
 
 describe('helpers', () => {
+  describe('averageTaskCount', () => {
+    it('returns the total task count divided by the number of projects', () => {
+      const projects = [{ taskCount: 2 }, { taskCount: 4 }, { taskCount: 12 }];
+
+      expect(averageTaskCount(projects)).toBe(6);
+    });
+  });
+
+  describe('firstTaskName', () => {
+    it('returns the name of the first task', () => {
+      expect(firstTaskName([{ name: 'Buy milk' }, { name: 'Walk dog' }])).toBe(
+        'Buy milk'
+      );
+    });
+  });
+
   describe('getTitle', () => {
     const projects = [
       { projectId: '1', name: 'Work' },
