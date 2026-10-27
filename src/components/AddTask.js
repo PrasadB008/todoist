@@ -65,6 +65,31 @@ export const AddTask = ({
     return false;
   };
 
+  const handleTaskInputChange = (e) => {
+    const inputValue = e.target.value;
+    setTask(inputValue);
+    
+    // Check if user pressed Enter after /todo command
+    if (inputValue.startsWith('/todo ')) {
+      const taskText = inputValue.slice(6).trim();
+      if (taskText && e.key === 'Enter') {
+        setTask(taskText);
+        addTask();
+      }
+    }
+  };
+
+  const handleTaskInputKeyDown = (e) => {
+    if (e.key === 'Enter' && task.startsWith('/todo ')) {
+      e.preventDefault();
+      const taskText = task.slice(6).trim();
+      if (taskText) {
+        setTask(taskText);
+        addTask();
+      }
+    }
+  };
+
   return (
     <div
       className={showQuickAddTask ? 'add-task add-task__overlay' : 'add-task'}
@@ -133,11 +158,8 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => {
-              const inputValue = e.target.value;
-              handleSlashCommand(inputValue);
-              setTask(inputValue);
-            }}
+            onChange={handleTaskInputChange}
+            onKeyDown={handleTaskInputKeyDown}
           />
           <button
             type="button"

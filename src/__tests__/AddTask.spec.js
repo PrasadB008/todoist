@@ -414,7 +414,7 @@ describe('<AddTask />', () => {
       );
     });
 
-    it('extracts task text from /todo command', () => {
+    it('extracts task text from /todo command and adds task on Enter', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -425,9 +425,13 @@ describe('<AddTask />', () => {
       fireEvent.change(queryByTestId('add-task-content'), {
         target: { value: '/todo Complete project report' },
       });
-      expect(queryByTestId('add-task-content').value).toBe(
-        '/todo Complete project report'
-      );
+      
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 'Enter',
+      });
+      
+      expect(queryByTestId('add-task-content').value).toBe('');
     });
 
     it('ignores /todo command with no text after it', () => {
@@ -456,6 +460,26 @@ describe('<AddTask />', () => {
         target: { value: '/todo   ' },
       });
       expect(queryByTestId('add-task-content').value).toBe('/todo   ');
+    });
+
+    it('adds task with /todo command when Enter is pressed', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo New task' },
+      });
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 'Enter',
+      });
+
+      expect(queryByTestId('add-task-content').value).toBe('');
     });
   });
 });
