@@ -68,7 +68,6 @@ export const AddTask = ({
       const slashCommandResult = handleSlashCommand(task);
       if (slashCommandResult) {
         // Process /todo command
-        setTask(slashCommandResult);
         e.preventDefault();
         // Trigger add task with the extracted text
         const projectId = project || selectedProject;

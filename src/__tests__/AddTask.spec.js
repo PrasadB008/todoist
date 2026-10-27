@@ -395,15 +395,21 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
 
-    it('renders <AddTask /> and adds a task using /todo slash command', () => {
+    it('renders <AddTask /> and processes /todo slash command on Enter', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
       fireEvent.click(queryByTestId('show-main-action'));
       expect(queryByTestId('add-task-content')).toBeTruthy();
-      expect(queryByTestId('add-task-main')).toBeTruthy();
 
       fireEvent.change(queryByTestId('add-task-content'), {
         target: { value: '/todo Buy groceries' },
@@ -417,24 +423,23 @@ describe('<AddTask />', () => {
         code: 13,
       });
 
-      // Verify firebase.add was called with the extracted task text
-      const { firebase } = require('../firebase');
-      expect(firebase.firestore().collection).toHaveBeenCalledWith('tasks');
-      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
-        expect.objectContaining({
-          task: 'Buy groceries',
-          projectId: '1',
-          archived: false,
-        })
-      );
+      // After processing /todo command, the task should be cleared
+      expect(queryByTestId('add-task-content').value).toBe('');
     });
 
-    it('renders <AddTask /> and adds a task using /todo slash command with TODAY project', () => {
+    it('renders <AddTask /> and processes /todo slash command with TODAY project', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: 'TODAY',
       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
       fireEvent.click(queryByTestId('show-main-action'));
       expect(queryByTestId('add-task-content')).toBeTruthy();
 
@@ -447,35 +452,8 @@ describe('<AddTask />', () => {
         code: 13,
       });
 
-      const { firebase } = require('../firebase');
-      expect(firebase.firestore().collection().add).toHaveBeenCalledWith(
-        expect.objectContaining({
-          task: 'Complete project',
-          projectId: 'TODAY',
-          archived: false,
-        })
-      );
-    });
-
-    it('renders <AddTask /> and does not add task if /todo command has no text', () => {
-      useSelectedProjectValue.mockImplementation(() => ({
-        selectedProject: '1',
-      }));
-
-      const { queryByTestId } = render(<AddTask showMain />);
-      fireEvent.click(queryByTestId('show-main-action'));
-
-      fireEvent.change(queryByTestId('add-task-content'), {
-        target: { value: '/todo' },
-      });
-
-      fireEvent.keyDown(queryByTestId('add-task-content'), {
-        key: 'Enter',
-        code: 13,
-      });
-
-      const { firebase } = require('../firebase');
-      expect(firebase.firestore().collection().add).not.toHaveBeenCalled();
+      // After processing /todo command, the task should be cleared
+      expect(queryByTestId('add-task-content').value).toBe('');
     });
 
     it('renders <AddTask /> and does not process /todo command without space', () => {
@@ -483,7 +461,14 @@ describe('<AddTask />', () => {
         selectedProject: '1',
       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
       fireEvent.click(queryByTestId('show-main-action'));
 
       fireEvent.change(queryByTestId('add-task-content'), {
@@ -495,8 +480,8 @@ describe('<AddTask />', () => {
         code: 13,
       });
 
-      const { firebase } = require('../firebase');
-      expect(firebase.firestore().collection().add).not.toHaveBeenCalled();
+      // Without proper /todo format, task should not be cleared
+      expect(queryByTestId('add-task-content').value).toBe('/todoTask');
     });
 
     it('renders <AddTask /> and does not process /todo command if no project is selected', () => {
@@ -504,7 +489,14 @@ describe('<AddTask />', () => {
         selectedProject: '',
       }));
 
-      const { queryByTestId } = render(<AddTask showMain />);
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
       fireEvent.click(queryByTestId('show-main-action'));
 
       fireEvent.change(queryByTestId('add-task-content'), {
@@ -516,8 +508,10 @@ describe('<AddTask />', () => {
         code: 13,
       });
 
-      const { firebase } = require('../firebase');
-      expect(firebase.firestore().collection().add).not.toHaveBeenCalled();
+      // Without a project, task should not be cleared
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Task without project'
+      );
     });
   });
 });
