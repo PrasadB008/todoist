@@ -141,6 +141,95 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  $dark-bg: #1e1e1e;
+  $dark-surface: #282828;
+  $dark-border: 1px solid #3a3a3a;
+  $dark-text: #e6e6e6;
+
+  color: $dark-text;
+  background-color: $dark-bg;
+  min-height: 100vh;
+
+  .sidebar {
+    background-color: $dark-bg;
+    border-right: $dark-border;
+    color: $dark-text;
+
+    &__middle {
+      border-bottom: $dark-border;
+
+      h2 {
+        color: $dark-text;
+      }
+    }
+
+    &__generic li {
+      color: $dark-text;
+
+      div:nth-child(1) span:first-of-type svg {
+        color: #b0b0b0;
+      }
+
+      &.active, &:hover {
+        background-color: $dark-surface;
+      }
+    }
+
+    &__project {
+      &.active, &:hover {
+        background-color: $dark-surface;
+      }
+    }
+  }
+
+  .tasks {
+    background-color: $dark-bg;
+    border-right: $dark-border;
+    color: $dark-text;
+
+    &__list li {
+      color: $dark-text;
+      border-bottom: $dark-border;
+
+      .checkbox-holder .checkbox {
+        color: $dark-text;
+        border-color: #8a8a8a;
+      }
+    }
+  }
+
+  .add-task__text, .add-project__text {
+    color: #b0b0b0;
+  }
+
+  .add-task__content, .add-project__name {
+    background-color: $dark-surface !important;
+    border: $dark-border;
+    color: $dark-text;
+  }
+
+  .add-task__cancel, .add-project__cancel, .project-delete-modal__inner span {
+    color: #b0b0b0;
+  }
+
+  .add-task__overlay .add-task__main,
+  .project-delete-modal__inner,
+  .task-date,
+  .project-overlay {
+    background-color: $dark-surface;
+    color: $dark-text;
+  }
+
+  .task-date__list li,
+  .project-overlay__list li {
+    color: $dark-text;
+    border-bottom: $dark-border;
+
+    &:hover {
+      background-color: #333;
+    }
+  }
 }
 
 /* Header
@@ -237,6 +326,10 @@ header {
               svg {
                 width: 20px;
                 height: 20px;
+              }
+
+              &[aria-pressed='true'] svg {
+                color: #ffd24d;
               }
             }
 
