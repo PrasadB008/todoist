@@ -141,6 +141,81 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  .sidebar {
+    background-color: #1e1e1e;
+    border-right-color: #333;
+
+    &__middle {
+      border-bottom-color: #333;
+
+      h2 {
+        color: #ddd;
+      }
+    }
+
+    &__generic li,
+    &__project {
+      color: #ddd;
+    }
+
+    &__generic li svg {
+      color: #aaa;
+    }
+
+    &__generic li.active,
+    &__generic li:hover,
+    &__project.active,
+    &__project:hover {
+      background-color: #333;
+    }
+  }
+
+  .tasks {
+    background-color: #252525;
+    border-right-color: #333;
+    color: #eee;
+
+    h2 {
+      color: #eee;
+    }
+
+    &__list li {
+      color: #eee;
+      border-bottom-color: #3a3a3a;
+
+      .checkbox-holder .checkbox {
+        border-color: #aaa;
+        color: #ddd;
+      }
+    }
+  }
+
+  .add-task__text,
+  .add-project__text {
+    color: #bbb;
+  }
+
+  .add-task__main,
+  .add-task__content,
+  .add-project__name,
+  .task-date,
+  .project-overlay,
+  .project-delete-modal__inner {
+    background-color: #2d2d2d !important;
+    color: #eee;
+    border-color: #444;
+  }
+
+  .task-date__list li,
+  .project-overlay__list li {
+    color: #eee;
+    border-bottom-color: #3a3a3a;
+
+    &:hover {
+      background-color: #3a3a3a;
+    }
+  }
 }
 
 /* Header
