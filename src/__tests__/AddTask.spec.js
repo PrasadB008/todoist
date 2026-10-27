@@ -439,7 +439,9 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content')).toBeTruthy();
 
       fireEvent.change(queryByTestId('add-task-content'), {
-        target: { value: '/todo This is a longer task description with many words' },
+        target: {
+          value: '/todo This is a longer task description with many words',
+        },
       });
       expect(queryByTestId('add-task-content').value).toBe(
         '/todo This is a longer task description with many words'
@@ -500,5 +502,5 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
       expect(setShowQuickAddTask).toHaveBeenCalled();
     });
-    });
-    });
+  });
+});
