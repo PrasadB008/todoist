@@ -141,6 +141,107 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  .sidebar {
+    background-color: #1f1f1f;
+    border-right-color: #333;
+
+    &__generic li,
+    &__middle h2 {
+      color: #e0e0e0;
+    }
+
+    &__middle {
+      border-bottom-color: #333;
+
+      span {
+        color: #bbb;
+      }
+    }
+
+    &__project.active,
+    &__project:hover,
+    &__generic li.active,
+    &__generic li:hover {
+      background-color: #333;
+    }
+  }
+
+  .tasks {
+    background-color: #181818;
+    border-right-color: #333;
+    color: #e0e0e0;
+
+    &__list li {
+      color: #e0e0e0;
+      border-bottom-color: #333;
+
+      .checkbox-holder .checkbox {
+        border-color: #aaa;
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  .add-task {
+    &__text,
+    &__project,
+    &__date {
+      color: #bbb;
+    }
+
+    &__content,
+    .add-project__name {
+      background-color: #262626 !important;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+
+    &__overlay .add-task__main {
+      background-color: #232323;
+      color: #e0e0e0;
+    }
+
+    &__cancel {
+      color: #bbb;
+    }
+  }
+
+  .add-project {
+    &__text {
+      color: #bbb;
+    }
+
+    &__name {
+      background-color: #262626 !important;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+
+    &__cancel {
+      color: #bbb;
+    }
+  }
+
+  .task-date,
+  .project-overlay,
+  .project-delete-modal__inner {
+    background-color: #232323;
+    color: #e0e0e0;
+
+    li {
+      color: #e0e0e0;
+      border-bottom-color: #333;
+
+      &:hover {
+        background-color: #333;
+      }
+    }
+
+    span {
+      color: #bbb;
+    }
+  }
 }
 
 /* Header
@@ -234,9 +335,35 @@ header {
               display: -ms-flexbox;
               display: flex;
 
-              svg {
-                width: 20px;
+              .dark-toggle__track {
+                position: relative;
+                display: block;
+                width: 36px;
                 height: 20px;
+                border-radius: 10px;
+                background-color: rgba(255, 255, 255, 0.4);
+                transition: background-color 0.2s;
+              }
+
+              .dark-toggle__thumb {
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background-color: white;
+                transition: transform 0.2s;
+              }
+
+              &.dark-toggle--on {
+                .dark-toggle__track {
+                  background-color: #4caf50;
+                }
+
+                .dark-toggle__thumb {
+                  transform: translateX(16px);
+                }
               }
             }
 
