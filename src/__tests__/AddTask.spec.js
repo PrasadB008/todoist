@@ -395,4 +395,108 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('slash commands', () => {
+    it('should parse /todo command and extract task text', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          setShowAddTask={mockSetShowAddTask}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Buy groceries' } });
+      fireEvent.keyDown(input, { key: 'Enter', code: 13 });
+
+      expect(input.value).toBe('Buy groceries');
+    });
+
+    it('should not parse /todo command without text', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          setShowAddTask={mockSetShowAddTask}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo' } });
+      fireEvent.keyDown(input, { key: 'Enter', code: 13 });
+
+      expect(input.value).toBe('/todo');
+    });
+
+    it('should not parse /todo command with only whitespace', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          setShowAddTask={mockSetShowAddTask}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo   ' } });
+      fireEvent.keyDown(input, { key: 'Enter', code: 13 });
+
+      expect(input.value).toBe('/todo   ');
+    });
+
+    it('should handle /todo command with special characters', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          setShowAddTask={mockSetShowAddTask}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Call @john about #project' } });
+      fireEvent.keyDown(input, { key: 'Enter', code: 13 });
+
+      expect(input.value).toBe('Call @john about #project');
+    });
+
+    it('should not parse unrecognized slash commands', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          setShowAddTask={mockSetShowAddTask}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/unknown some text' } });
+      fireEvent.keyDown(input, { key: 'Enter', code: 13 });
+
+      expect(input.value).toBe('/unknown some text');
+    });
+
+    it('should only parse /todo on Enter key', () => {
+      const { getByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          showAddTask
+          setShowAddTask={mockSetShowAddTask}
+        />
+      );
+
+      const input = getByTestId('add-task-content');
+      fireEvent.change(input, { target: { value: '/todo Buy milk' } });
+      fireEvent.keyDown(input, { key: 'a', code: 65 });
+
+      expect(input.value).toBe('/todo Buy milk');
+    });
+  });
 });

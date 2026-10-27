@@ -22,6 +22,14 @@ export const AddTask = ({
 
   const { selectedProject } = useSelectedProjectValue();
 
+  const parseSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      return { command: 'todo', text: todoMatch[1] };
+    }
+    return null;
+  };
+
   const addTask = () => {
     const projectId = project || selectedProject;
     let collatedDate = '';
@@ -52,6 +60,20 @@ export const AddTask = ({
           setShowProjectOverlay(false);
         })
     );
+  };
+
+  const handleTaskInputChange = (e) => {
+    const input = e.target.value;
+    setTask(input);
+
+    // Check for /todo slash command on Enter key
+    if (e.key === 'Enter') {
+      const parsed = parseSlashCommand(input);
+      if (parsed && parsed.command === 'todo') {
+        e.preventDefault();
+        setTask(parsed.text);
+      }
+    }
   };
 
   return (
@@ -123,6 +145,7 @@ export const AddTask = ({
             type="text"
             value={task}
             onChange={(e) => setTask(e.target.value)}
+            onKeyDown={handleTaskInputChange}
           />
           <button
             type="button"
