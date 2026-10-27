@@ -29,6 +29,19 @@ describe('<Header />', () => {
       expect(setDarkMode).toHaveBeenCalledWith(true);
     });
 
+    it('reflects the dark mode state on the toggle and switches it off again', () => {
+      const setDarkMode = jest.fn();
+
+      const { queryByTestId } = render(
+        <Header darkMode setDarkMode={setDarkMode} />
+      );
+      const toggle = queryByTestId('dark-mode-action');
+      expect(toggle.getAttribute('aria-pressed')).toBe('true');
+
+      fireEvent.click(toggle);
+      expect(setDarkMode).toHaveBeenCalledWith(false);
+    });
+
     it('renders the header component and set quick add task to true using onClick', () => {
       const darkMode = false;
 
