@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { App } from '../App';
 
 beforeEach(cleanup); // clean meeeeeeeeee!
@@ -19,5 +19,22 @@ describe('<App />', () => {
     expect(
       queryByTestId('application').classList.contains('darkmode')
     ).toBeTruthy();
+  });
+
+  it('keeps the task list inside the darkmode container and toggles it', () => {
+    const { queryByTestId } = render(<App />);
+    const application = queryByTestId('application');
+    expect(application.contains(queryByTestId('tasks'))).toBeTruthy();
+
+    const toggle = queryByTestId('dark-mode-action');
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
+
+    fireEvent.click(toggle);
+    expect(application.classList.contains('darkmode')).toBeTruthy();
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+
+    fireEvent.click(toggle);
+    expect(application.classList.contains('darkmode')).toBeFalsy();
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
   });
 });
