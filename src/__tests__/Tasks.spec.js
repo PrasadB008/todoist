@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -95,5 +95,29 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('Inbox');
+  });
+
+  it('toggles dark mode from the task list switch', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+    const setDarkMode = jest.fn();
+
+    const { queryByTestId } = render(
+      <Tasks darkMode={false} setDarkMode={setDarkMode} />
+    );
+    fireEvent.click(queryByTestId('tasks-dark-mode-toggle'));
+    expect(setDarkMode).toHaveBeenCalledWith(true);
+  });
+
+  it('hides the dark mode switch when no setter is given', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+
+    const { queryByTestId } = render(<Tasks />);
+    expect(queryByTestId('tasks-dark-mode-toggle')).toBeFalsy();
   });
 });
