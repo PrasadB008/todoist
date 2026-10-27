@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Sidebar } from '../components/layout/Sidebar';
+import { useTasks } from '../hooks';
 
 beforeEach(cleanup);
 
@@ -21,11 +22,34 @@ jest.mock('../context', () => ({
   })),
 }));
 
+jest.mock('../hooks', () => ({
+  useTasks: jest.fn(() => ({
+    tasks: [
+      { id: '1', task: 'First task', archived: false },
+      { id: '2', task: 'Second task', archived: false },
+    ],
+  })),
+}));
+
 describe('<Sidebar />', () => {
   describe('Success', () => {
     it('renders the <Sidebar />', () => {
       const { queryByTestId } = render(<Sidebar />);
       expect(queryByTestId('sidebar')).toBeTruthy();
+    });
+
+    it('shows the number of tasks in the sidebar footer', () => {
+      const { getByTestId } = render(<Sidebar />);
+      expect(getByTestId('sidebar-footer')).toBeTruthy();
+      expect(getByTestId('task-count').textContent).toBe('2 tasks');
+    });
+
+    it('uses the singular label when there is one task', () => {
+      useTasks.mockImplementationOnce(() => ({
+        tasks: [{ id: '1', task: 'Only task', archived: false }],
+      }));
+      const { getByTestId } = render(<Sidebar />);
+      expect(getByTestId('task-count').textContent).toBe('1 task');
     });
 
     it('changes the active project to inbox in collated tasks', () => {

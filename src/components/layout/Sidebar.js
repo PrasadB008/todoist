@@ -8,9 +8,11 @@ import {
 import { Projects } from '../Projects';
 import { useSelectedProjectValue } from '../../context';
 import { AddProject } from '../AddProject';
+import { useTasks } from '../../hooks';
 
 export const Sidebar = () => {
-  const { setSelectedProject } = useSelectedProjectValue();
+  const { selectedProject, setSelectedProject } = useSelectedProjectValue();
+  const { tasks } = useTasks(selectedProject);
   const [active, setActive] = useState('inbox');
   const [showProjects, setShowProjects] = useState(true);
 
@@ -117,6 +119,12 @@ export const Sidebar = () => {
       <ul className="sidebar__projects">{showProjects && <Projects />}</ul>
 
       {showProjects && <AddProject />}
+
+      <div className="sidebar__footer" data-testid="sidebar-footer">
+        <span data-testid="task-count">
+          {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
+        </span>
+      </div>
     </div>
   );
 };
