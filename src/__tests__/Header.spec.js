@@ -35,9 +35,9 @@ describe('<Header />', () => {
       const { queryByTestId } = render(
         <Header darkMode setDarkMode={setDarkMode} />
       );
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-pressed')).toBe(
-        'true'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-pressed')
+      ).toBe('true');
 
       fireEvent.click(queryByTestId('dark-mode-action'));
       expect(setDarkMode).toHaveBeenCalledWith(false);
