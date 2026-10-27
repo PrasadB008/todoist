@@ -238,6 +238,11 @@ header {
                 width: 20px;
                 height: 20px;
               }
+
+              &.is-on {
+                background-color: rgba(255,255,255,0.25);
+                border-radius: 3px;
+              }
             }
 
           }
@@ -524,6 +529,26 @@ header {
         border: 1px solid gray;
         border-radius: 16px;
       }
+    }
+  }
+}
+
+.darkmode .tasks {
+  background-color: #1e1e1e;
+  border-right-color: #333;
+  color: #e6e6e6;
+
+  h2 {
+    color: #f5f5f5;
+  }
+
+  &__list li {
+    color: #e6e6e6;
+    border-bottom-color: #333;
+
+    .checkbox-holder .checkbox {
+      border-color: #9a9a9a;
+      color: #e6e6e6;
     }
   }
 }
