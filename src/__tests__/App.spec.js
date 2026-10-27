@@ -20,4 +20,11 @@ describe('<App />', () => {
       queryByTestId('application').classList.contains('darkmode')
     ).toBeTruthy();
   });
+
+  it('renders the task list inside the dark mode container', () => {
+    const { queryByTestId } = render(<App darkModeDefault />);
+    expect(
+      queryByTestId('application').contains(queryByTestId('tasks'))
+    ).toBeTruthy();
+  });
 });
