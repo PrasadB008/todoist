@@ -398,15 +398,17 @@ describe('<AddTask />', () => {
 
   describe('slash commands', () => {
     it('should parse /todo command and extract task text', () => {
-      const { getByTestId } = render(
+      const setShowAddTask = jest.fn();
+      const { getByTestId, queryByTestId } = render(
         <AddTask
+          showAddTaskMain
           project="INBOX"
           selectedProject="INBOX"
-          showAddTask
-          setShowAddTask={mockSetShowAddTask}
+          setShowAddTask={setShowAddTask}
         />
       );
 
+      fireEvent.click(queryByTestId('show-main-action'));
       const input = getByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo Buy groceries' } });
       fireEvent.keyDown(input, { key: 'Enter', code: 13 });
@@ -415,15 +417,17 @@ describe('<AddTask />', () => {
     });
 
     it('should not parse /todo command without text', () => {
-      const { getByTestId } = render(
+      const setShowAddTask = jest.fn();
+      const { getByTestId, queryByTestId } = render(
         <AddTask
+          showAddTaskMain
           project="INBOX"
           selectedProject="INBOX"
-          showAddTask
-          setShowAddTask={mockSetShowAddTask}
+          setShowAddTask={setShowAddTask}
         />
       );
 
+      fireEvent.click(queryByTestId('show-main-action'));
       const input = getByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo' } });
       fireEvent.keyDown(input, { key: 'Enter', code: 13 });
@@ -432,15 +436,17 @@ describe('<AddTask />', () => {
     });
 
     it('should not parse /todo command with only whitespace', () => {
-      const { getByTestId } = render(
+      const setShowAddTask = jest.fn();
+      const { getByTestId, queryByTestId } = render(
         <AddTask
+          showAddTaskMain
           project="INBOX"
           selectedProject="INBOX"
-          showAddTask
-          setShowAddTask={mockSetShowAddTask}
+          setShowAddTask={setShowAddTask}
         />
       );
 
+      fireEvent.click(queryByTestId('show-main-action'));
       const input = getByTestId('add-task-content');
       fireEvent.change(input, { target: { value: '/todo   ' } });
       fireEvent.keyDown(input, { key: 'Enter', code: 13 });
@@ -449,12 +455,13 @@ describe('<AddTask />', () => {
     });
 
     it('should handle /todo command with special characters', () => {
+      const setShowAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
+          showAddTaskMain
           project="INBOX"
           selectedProject="INBOX"
-          showAddTask
-          setShowAddTask={mockSetShowAddTask}
+          setShowAddTask={setShowAddTask}
         />
       );
 
@@ -466,12 +473,13 @@ describe('<AddTask />', () => {
     });
 
     it('should not parse unrecognized slash commands', () => {
+      const setShowAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
+          showAddTaskMain
           project="INBOX"
           selectedProject="INBOX"
-          showAddTask
-          setShowAddTask={mockSetShowAddTask}
+          setShowAddTask={setShowAddTask}
         />
       );
 
@@ -483,12 +491,13 @@ describe('<AddTask />', () => {
     });
 
     it('should only parse /todo on Enter key', () => {
+      const setShowAddTask = jest.fn();
       const { getByTestId } = render(
         <AddTask
+          showAddTaskMain
           project="INBOX"
           selectedProject="INBOX"
-          showAddTask
-          setShowAddTask={mockSetShowAddTask}
+          setShowAddTask={setShowAddTask}
         />
       );
 
