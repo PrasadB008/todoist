@@ -54,6 +54,52 @@ export const AddTask = ({
     );
   };
 
+  const handleSlashCommand = (input) => {
+    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    if (todoMatch) {
+      const taskText = todoMatch[1];
+      return taskText;
+    }
+    return null;
+  };
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      const slashCommandResult = handleSlashCommand(task);
+      if (slashCommandResult) {
+        // Process /todo command
+        setTask(slashCommandResult);
+        e.preventDefault();
+        // Trigger add task with the extracted text
+        const projectId = project || selectedProject;
+        if (projectId) {
+          let collatedDate = '';
+          if (projectId === 'TODAY') {
+            collatedDate = moment().format('DD/MM/YYYY');
+          } else if (projectId === 'NEXT_7') {
+            collatedDate = moment().add(7, 'days').format('DD/MM/YYYY');
+          }
+          firebase
+            .firestore()
+            .collection('tasks')
+            .add({
+              archived: false,
+              projectId,
+              task: slashCommandResult,
+              date: collatedDate || taskDate,
+              userId: 'jlIFXIwyAL3tzHMtzRbw',
+            })
+            .then(() => {
+              setTask('');
+              setProject('');
+              setShowMain('');
+              setShowProjectOverlay(false);
+            });
+        }
+      }
+    }
+  };
+
   return (
     <div
       className={showQuickAddTask ? 'add-task add-task__overlay' : 'add-task'}
@@ -123,6 +169,7 @@ export const AddTask = ({
             type="text"
             value={task}
             onChange={(e) => setTask(e.target.value)}
+            onKeyDown={handleInputKeyDown}
           />
           <button
             type="button"
