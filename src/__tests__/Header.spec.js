@@ -33,9 +33,9 @@ describe('<Header />', () => {
       const { queryByTestId } = render(
         <Header darkMode setDarkMode={jest.fn()} />
       );
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-pressed')).toBe(
-        'true'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-pressed')
+      ).toBe('true');
     });
 
     it('renders the header component and set quick add task to true using onClick', () => {
