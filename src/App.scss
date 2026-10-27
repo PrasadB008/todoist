@@ -134,12 +134,111 @@ $generic-bg: #db4c3f;
 
 /* Darkmode
   ============================================ */
+$dark-bg: #1e1e1e;
+$dark-surface: #282828;
+$dark-hover: #333;
+$dark-border: 1px solid #3a3a3a;
+$dark-text: #e6e6e6;
+
 .darkmode {
+  min-height: 100vh;
+  background-color: $dark-bg;
+  color: $dark-text;
+
   header {
     -webkit-box-shadow: 0 1px 3px 0 rgba(0,0,0,0.15);
     box-shadow: 0 1px 3px 0 rgba(0,0,0,0.15);
-    background-color: #282828;
+    background-color: $dark-surface;
     border-color: transparent;
+  }
+
+  .sidebar {
+    background-color: $dark-bg;
+    border-right: $dark-border;
+
+    &__project {
+      &.active, &:hover {
+        background-color: $dark-hover;
+      }
+    }
+
+    &__middle {
+      border-bottom: $dark-border;
+
+      span {
+        color: #aaa;
+      }
+
+      h2 {
+        color: $dark-text;
+      }
+    }
+
+    &__generic {
+      li {
+        color: $dark-text;
+
+        div:nth-child(1) span:first-of-type svg {
+          color: #aaa;
+        }
+
+        &.active, &:hover {
+          background-color: $dark-hover;
+        }
+      }
+    }
+  }
+
+  .tasks {
+    background-color: $dark-surface;
+    border-right: $dark-border;
+    color: $dark-text;
+
+    &__list li {
+      color: $dark-text;
+      border-bottom: $dark-border;
+
+      .checkbox-holder .checkbox {
+        border-color: #888;
+        color: $dark-text;
+      }
+    }
+  }
+
+  .add-task__main,
+  .task-date,
+  .project-overlay,
+  .project-delete-modal__inner {
+    background-color: $dark-surface;
+    color: $dark-text;
+  }
+
+  .add-task__content,
+  .add-project__name {
+    background-color: $dark-bg !important;
+    border-color: #444;
+    color: $dark-text;
+  }
+
+  .add-task__text,
+  .add-project__text {
+    color: #bbb;
+  }
+
+  .add-task__cancel,
+  .add-project__cancel,
+  .project-delete-modal__inner span {
+    color: #bbb;
+  }
+
+  .task-date__list li,
+  .project-overlay__list li {
+    color: $dark-text;
+    border-bottom: $dark-border;
+
+    &:hover {
+      background-color: $dark-hover;
+    }
   }
 }
 
