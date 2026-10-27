@@ -54,6 +54,17 @@ export const AddTask = ({
     );
   };
 
+  const handleSlashCommand = (inputValue) => {
+    if (inputValue.startsWith('/todo ')) {
+      const taskText = inputValue.slice(6).trim();
+      if (taskText) {
+        setTask(taskText);
+        return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <div
       className={showQuickAddTask ? 'add-task add-task__overlay' : 'add-task'}
@@ -122,7 +133,11 @@ export const AddTask = ({
             data-testid="add-task-content"
             type="text"
             value={task}
-            onChange={(e) => setTask(e.target.value)}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              handleSlashCommand(inputValue);
+              setTask(inputValue);
+            }}
           />
           <button
             type="button"
