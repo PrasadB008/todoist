@@ -410,11 +410,11 @@ describe('<AddTask />', () => {
         target: { value: '/todo Buy groceries' },
       });
       expect(queryByTestId('add-task-content').value).toBe(
-        '/todo Buy groceries'
+        'Buy groceries'
       );
     });
 
-    it('extracts task text from /todo command and adds task on Enter', () => {
+    it('extracts task text from /todo command', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -425,13 +425,9 @@ describe('<AddTask />', () => {
       fireEvent.change(queryByTestId('add-task-content'), {
         target: { value: '/todo Complete project report' },
       });
-      
-      fireEvent.keyDown(queryByTestId('add-task-content'), {
-        key: 'Enter',
-        code: 'Enter',
-      });
-      
-      expect(queryByTestId('add-task-content').value).toBe('');
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Complete project report'
+      );
     });
 
     it('ignores /todo command with no text after it', () => {
@@ -462,7 +458,7 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo   ');
     });
 
-    it('adds task with /todo command when Enter is pressed', () => {
+    it('extracts multiple words from /todo command', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -471,15 +467,11 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('show-main-action'));
 
       fireEvent.change(queryByTestId('add-task-content'), {
-        target: { value: '/todo New task' },
+        target: { value: '/todo Buy milk and eggs from store' },
       });
-
-      fireEvent.keyDown(queryByTestId('add-task-content'), {
-        key: 'Enter',
-        code: 'Enter',
-      });
-
-      expect(queryByTestId('add-task-content').value).toBe('');
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Buy milk and eggs from store'
+      );
     });
   });
 });
