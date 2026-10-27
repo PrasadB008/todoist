@@ -393,6 +393,125 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
-    });
-  });
-});
+      });
+
+      it('renders <AddTask /> and adds a task using /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy groceries'
+      );
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
+
+      it('renders <AddTask /> and does not add task with /todo if no text provided', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo ');
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+      // Should not call setShowQuickAddTask because no text was provided
+      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      });
+
+      it('renders <AddTask /> and adds a task using /todo with TODAY project', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete project' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete project'
+      );
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
+
+      it('renders <AddTask /> and adds a task using /todo with NEXT_7 project', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'NEXT_7',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Schedule meeting' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Schedule meeting'
+      );
+
+      fireEvent.keyDown(queryByTestId('add-task-content'), {
+        key: 'Enter',
+        code: 13,
+      });
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
+      });
+      });

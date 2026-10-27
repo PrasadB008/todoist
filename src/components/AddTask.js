@@ -54,6 +54,47 @@ export const AddTask = ({
     );
   };
 
+  const handleSlashCommand = (e) => {
+    if (e.key === 'Enter') {
+      const trimmedTask = task.trim();
+      if (trimmedTask.startsWith('/todo ')) {
+        e.preventDefault();
+        const taskText = trimmedTask.slice(6); // Remove '/todo ' prefix
+        if (taskText) {
+          setTask(taskText);
+          // Trigger addTask after state update
+          setTimeout(() => {
+            const projectId = project || selectedProject;
+            let collatedDate = '';
+
+            if (projectId === 'TODAY') {
+              collatedDate = moment().format('DD/MM/YYYY');
+            } else if (projectId === 'NEXT_7') {
+              collatedDate = moment().add(7, 'days').format('DD/MM/YYYY');
+            }
+
+            firebase
+              .firestore()
+              .collection('tasks')
+              .add({
+                archived: false,
+                projectId,
+                task: taskText,
+                date: collatedDate || taskDate,
+                userId: 'jlIFXIwyAL3tzHMtzRbw',
+              })
+              .then(() => {
+                setTask('');
+                setProject('');
+                setShowMain('');
+                setShowProjectOverlay(false);
+              });
+          }, 0);
+        }
+      }
+    }
+  };
+
   return (
     <div
       className={showQuickAddTask ? 'add-task add-task__overlay' : 'add-task'}
@@ -123,6 +164,7 @@ export const AddTask = ({
             type="text"
             value={task}
             onChange={(e) => setTask(e.target.value)}
+            onKeyDown={handleSlashCommand}
           />
           <button
             type="button"
