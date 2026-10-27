@@ -4,6 +4,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
 import { useSelectedProjectValue } from '../context';
+import { parseSlashCommand } from '../utils/slashCommands';
 import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
 
@@ -21,14 +22,6 @@ export const AddTask = ({
   const [showTaskDate, setShowTaskDate] = useState(false);
 
   const { selectedProject } = useSelectedProjectValue();
-
-  const parseSlashCommand = (input) => {
-    const todoMatch = input.match(/^\/todo\s+(.+)$/);
-    if (todoMatch) {
-      return todoMatch[1];
-    }
-    return null;
-  };
 
   const addTask = () => {
     const projectId = project || selectedProject;
