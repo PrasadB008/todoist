@@ -333,6 +333,18 @@ header {
     padding-left: 3px;
   }
 
+  &__footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 20px;
+    border-top: $generic-border;
+    background-color: #fafafa;
+    color: #777;
+    font-size: 14px;
+  }
+
   &__project {
     @include va('left');
   }
