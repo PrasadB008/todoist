@@ -7,10 +7,13 @@ import {
 } from 'react-icons/fa';
 import { Projects } from '../Projects';
 import { useSelectedProjectValue } from '../../context';
+import { useTasks } from '../../hooks';
 import { AddProject } from '../AddProject';
 
 export const Sidebar = () => {
   const { setSelectedProject } = useSelectedProjectValue();
+  const { tasks } = useTasks();
+  const taskCount = tasks ? tasks.length : 0;
   const [active, setActive] = useState('inbox');
   const [showProjects, setShowProjects] = useState(true);
 
@@ -117,6 +120,10 @@ export const Sidebar = () => {
       <ul className="sidebar__projects">{showProjects && <Projects />}</ul>
 
       {showProjects && <AddProject />}
+
+      <div className="sidebar__footer" data-testid="sidebar-footer">
+        {taskCount} {taskCount === 1 ? 'task' : 'tasks'}
+      </div>
     </div>
   );
 };
