@@ -28,11 +28,15 @@ describe('<App />', () => {
 
     fireEvent.click(queryByTestId('dark-mode-action'));
     expect(app.classList.contains('darkmode')).toBeTruthy();
-    expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe('true');
+    expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
+      'true'
+    );
     expect(app.contains(queryByTestId('tasks'))).toBeTruthy();
 
     fireEvent.click(queryByTestId('dark-mode-action'));
     expect(app.classList.contains('darkmode')).toBeFalsy();
-    expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe('false');
+    expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
+      'false'
+    );
   });
 });
