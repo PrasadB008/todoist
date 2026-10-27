@@ -469,5 +469,5 @@ describe('<AddTask />', () => {
       });
       expect(queryByTestId('add-task-content').value).toBe('');
     });
-    });
-    });
+  });
+});
