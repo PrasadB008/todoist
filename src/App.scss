@@ -141,6 +141,56 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  .sidebar {
+    background-color: #1e1e1e;
+    border-right-color: #333;
+
+    li, .sidebar__middle h2 {
+      color: #e0e0e0;
+    }
+
+    .sidebar__generic li svg {
+      color: #bbb;
+    }
+
+    .sidebar__project.active,
+    .sidebar__project:hover,
+    .sidebar__generic li.active,
+    .sidebar__generic li:hover {
+      background-color: #2c2c2c;
+    }
+  }
+
+  .tasks {
+    background-color: #1e1e1e;
+    border-right-color: #333;
+    color: #e0e0e0;
+
+    h2 {
+      color: #fff;
+    }
+
+    .tasks__list li {
+      color: #e0e0e0;
+      border-bottom-color: #333;
+
+      .checkbox-holder .checkbox {
+        border-color: #aaa;
+        color: #e0e0e0;
+      }
+    }
+
+    .add-task__text {
+      color: #bbb;
+    }
+
+    .add-task__content {
+      background-color: #2c2c2c !important;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+  }
 }
 
 /* Header
