@@ -23,7 +23,7 @@ export const AddTask = ({
   const { selectedProject } = useSelectedProjectValue();
 
   const parseSlashCommand = (input) => {
-    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    const todoMatch = input.match(/^\/todo\s+(\S.*)$/);
     if (todoMatch) {
       return todoMatch[1];
     }
@@ -64,7 +64,6 @@ export const AddTask = ({
 
   const handleTaskInputChange = (e) => {
     const input = e.target.value;
-    setTask(input);
 
     // Check for /todo slash command
     const parsedTask = parseSlashCommand(input);
@@ -97,6 +96,9 @@ export const AddTask = ({
             setShowProjectOverlay(false);
           });
       }
+    } else {
+      // Only set task state if it's not a slash command
+      setTask(input);
     }
   };
 
