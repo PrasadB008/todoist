@@ -34,7 +34,9 @@ export const Header = ({ darkMode, setDarkMode }) => {
                 role="switch"
                 aria-checked={darkMode}
                 type="button"
-                className={`dark-mode-toggle${darkMode ? ' dark-mode-toggle--on' : ''}`}
+                className={`dark-mode-toggle${
+                  darkMode ? ' dark-mode-toggle--on' : ''
+                }`}
                 onClick={() => setDarkMode(!darkMode)}
               >
                 <span className="dark-mode-toggle__thumb" />

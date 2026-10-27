@@ -40,7 +40,9 @@ describe('<Header />', () => {
       expect(toggle.getAttribute('aria-checked')).toBe('false');
 
       rerender(<Header darkMode setDarkMode={setDarkMode} />);
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe('true');
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-checked')
+      ).toBe('true');
 
       fireEvent.click(queryByTestId('dark-mode-action'));
       expect(setDarkMode).toHaveBeenCalledWith(false);
