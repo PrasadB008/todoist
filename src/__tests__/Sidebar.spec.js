@@ -21,11 +21,25 @@ jest.mock('../context', () => ({
   })),
 }));
 
+jest.mock('../hooks', () => ({
+  useTasks: jest.fn(() => ({
+    tasks: [
+      { id: 'task-1', task: 'Fire Dwight', archived: false },
+      { id: 'task-2', task: 'Hire Jim', archived: false },
+    ],
+  })),
+}));
+
 describe('<Sidebar />', () => {
   describe('Success', () => {
     it('renders the <Sidebar />', () => {
       const { queryByTestId } = render(<Sidebar />);
       expect(queryByTestId('sidebar')).toBeTruthy();
+    });
+
+    it('shows the number of tasks in the footer', () => {
+      const { queryByTestId } = render(<Sidebar />);
+      expect(queryByTestId('sidebar-footer').textContent).toBe('2 tasks');
     });
 
     it('changes the active project to inbox in collated tasks', () => {
