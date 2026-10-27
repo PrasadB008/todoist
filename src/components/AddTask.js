@@ -27,6 +27,10 @@ export const AddTask = ({
     if (todoMatch) {
       return todoMatch[1];
     }
+    // If input starts with /todo but has no text after it, return empty string
+    if (input.match(/^\/todo\s*$/)) {
+      return '';
+    }
     return null;
   };
 
@@ -37,7 +41,7 @@ export const AddTask = ({
 
     // Check for /todo slash command
     const slashCommandText = parseSlashCommand(task);
-    if (slashCommandText) {
+    if (slashCommandText !== null) {
       taskText = slashCommandText;
     }
 
