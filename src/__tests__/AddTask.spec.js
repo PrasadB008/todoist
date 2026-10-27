@@ -395,7 +395,7 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
       });
 
-      it('renders <AddTask /> and adds a task using /todo slash command', () => {
+      it('renders <AddTask /> and adds a task using /todo slash command', (done) => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -422,7 +422,12 @@ describe('<AddTask />', () => {
         key: 'Enter',
         code: 13,
       });
-      expect(setShowQuickAddTask).toHaveBeenCalled();
+
+      // Verify that firebase.firestore().collection('tasks').add was called
+      setTimeout(() => {
+        expect(firebase.firestore().collection).toHaveBeenCalledWith('tasks');
+        done();
+      }, 100);
       });
 
       it('renders <AddTask /> and does not add task with /todo if no text provided', () => {
@@ -446,15 +451,16 @@ describe('<AddTask />', () => {
       });
       expect(queryByTestId('add-task-content').value).toBe('/todo ');
 
+      const initialCallCount = firebase.firestore().collection.mock.calls.length;
       fireEvent.keyDown(queryByTestId('add-task-content'), {
         key: 'Enter',
         code: 13,
       });
-      // Should not call setShowQuickAddTask because no text was provided
-      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      // Should not call firebase because no text was provided
+      expect(firebase.firestore().collection.mock.calls.length).toBe(initialCallCount);
       });
 
-      it('renders <AddTask /> and adds a task using /todo with TODAY project', () => {
+      it('renders <AddTask /> and adds a task using /todo with TODAY project', (done) => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: 'TODAY',
       }));
@@ -481,10 +487,14 @@ describe('<AddTask />', () => {
         key: 'Enter',
         code: 13,
       });
-      expect(setShowQuickAddTask).toHaveBeenCalled();
+
+      setTimeout(() => {
+        expect(firebase.firestore().collection).toHaveBeenCalledWith('tasks');
+        done();
+      }, 100);
       });
 
-      it('renders <AddTask /> and adds a task using /todo with NEXT_7 project', () => {
+      it('renders <AddTask /> and adds a task using /todo with NEXT_7 project', (done) => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: 'NEXT_7',
       }));
@@ -511,7 +521,11 @@ describe('<AddTask />', () => {
         key: 'Enter',
         code: 13,
       });
-      expect(setShowQuickAddTask).toHaveBeenCalled();
+
+      setTimeout(() => {
+        expect(firebase.firestore().collection).toHaveBeenCalledWith('tasks');
+        done();
+      }, 100);
       });
       });
       });
