@@ -1,10 +1,21 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
+import PropTypes from 'prop-types';
 import { Tasks } from '../Tasks';
 
-export const Content = () => (
+export const Content = ({ darkMode, setDarkMode }) => (
   <section className="content">
     <Sidebar />
-    <Tasks />
+    <Tasks darkMode={darkMode} setDarkMode={setDarkMode} />
   </section>
 );
+
+Content.propTypes = {
+  darkMode: PropTypes.bool,
+  setDarkMode: PropTypes.func,
+};
+
+Content.defaultProps = {
+  darkMode: false,
+  setDarkMode: undefined,
+};
