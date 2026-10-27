@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { AddTask } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
@@ -414,6 +414,8 @@ describe('<AddTask />', () => {
       fireEvent.change(queryByTestId('add-task-content'), {
         target: { value: '/todo Buy groceries' },
       });
+       
+      // After slash command is triggered, input should be cleared
       expect(queryByTestId('add-task-content').value).toBe('');
     });
 

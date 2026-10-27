@@ -56,15 +56,17 @@ export const AddTask = ({
 
   const handleTaskInputChange = (e) => {
     const value = e.target.value;
-    setTask(value);
 
     // Check for /todo slash command
     if (value.startsWith('/todo ')) {
       const taskText = value.slice(6).trim(); // Remove '/todo ' prefix
       if (taskText) {
         addTask(taskText);
+        return; // Don't set the task state, let addTask handle clearing it
       }
     }
+
+    setTask(value);
   };
 
   return (
