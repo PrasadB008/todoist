@@ -508,4 +508,5 @@ describe('<AddTask />', () => {
       expect(setShowQuickAddTask).toHaveBeenCalled();
     });
   });
+});
 
