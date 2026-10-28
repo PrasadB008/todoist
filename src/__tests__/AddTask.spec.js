@@ -463,6 +463,7 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo');
 
       fireEvent.click(queryByTestId('add-task'));
+      // Task should not be added, so setShowQuickAddTask should not be called
       expect(setShowQuickAddTask).not.toHaveBeenCalled();
     });
 
@@ -486,6 +487,7 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo   ');
 
       fireEvent.click(queryByTestId('add-task'));
+      // Task should not be added, so setShowQuickAddTask should not be called
       expect(setShowQuickAddTask).not.toHaveBeenCalled();
     });
 

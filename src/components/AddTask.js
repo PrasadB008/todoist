@@ -37,7 +37,11 @@ export const AddTask = ({
 
     // Parse slash commands
     const parsedText = parseSlashCommand(task);
-    if (parsedText) {
+    if (task.startsWith('/todo')) {
+      // If input starts with /todo, it must have valid parsed text
+      if (!parsedText) {
+        return false;
+      }
       taskText = parsedText;
     }
 
