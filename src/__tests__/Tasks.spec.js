@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -84,6 +84,22 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('🙌 THE OFFICE');
+  });
+
+  it('filters tasks using the search box', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => '1'),
+      selectedProject: '1',
+    }));
+
+    const { getByTestId, queryByText } = render(<Tasks />);
+    const input = getByTestId('task-search');
+
+    fireEvent.change(input, { target: { value: 'FEARED' } });
+    expect(queryByText(/Would I rather be feared/)).toBeTruthy();
+
+    fireEvent.change(input, { target: { value: 'nomatch' } });
+    expect(queryByText(/Would I rather be feared/)).toBeFalsy();
   });
 
   it('renders a task with a collated title', () => {
