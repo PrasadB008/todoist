@@ -32,6 +32,7 @@ export const Header = ({ darkMode, setDarkMode }) => {
               <button
                 data-testid="dark-mode-action"
                 aria-label="Darkmode on/off"
+                aria-pressed={darkMode}
                 type="button"
                 onClick={() => setDarkMode(!darkMode)}
               >
