@@ -24,9 +24,9 @@ describe('<Header />', () => {
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
       );
       expect(queryByTestId('header')).toBeTruthy();
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
-        'false'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-checked')
+      ).toBe('false');
 
       fireEvent.click(queryByTestId('dark-mode-action'));
       expect(setDarkMode).toHaveBeenCalledWith(true);
@@ -38,9 +38,9 @@ describe('<Header />', () => {
       const { queryByTestId } = render(
         <Header darkMode setDarkMode={setDarkMode} />
       );
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
-        'true'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-checked')
+      ).toBe('true');
 
       fireEvent.click(queryByTestId('dark-mode-action'));
       expect(setDarkMode).toHaveBeenCalledWith(false);
