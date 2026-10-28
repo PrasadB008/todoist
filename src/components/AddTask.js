@@ -23,9 +23,14 @@ export const AddTask = ({
   const { selectedProject } = useSelectedProjectValue();
 
   const parseSlashCommand = (input) => {
-    const todoMatch = input.match(/^\/todo\s+(.+)$/);
-    if (todoMatch) {
-      return todoMatch[1];
+    // Check if input starts with /todo
+    if (input.startsWith('/todo')) {
+      const todoMatch = input.match(/^\/todo\s+(.+)$/);
+      if (todoMatch) {
+        return todoMatch[1];
+      }
+      // If it starts with /todo but doesn't match the pattern, return empty string
+      return '';
     }
     return null;
   };
