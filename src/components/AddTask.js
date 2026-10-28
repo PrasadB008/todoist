@@ -7,6 +7,14 @@ import { useSelectedProjectValue } from '../context';
 import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
 
+const parseSlashCommand = (input) => {
+  const todoMatch = input.match(/^\/todo\s+(.+)$/);
+  if (todoMatch) {
+    return todoMatch[1];
+  }
+  return null;
+};
+
 export const AddTask = ({
   showAddTaskMain = true,
   shouldShowMain = false,
@@ -23,6 +31,8 @@ export const AddTask = ({
   const { selectedProject } = useSelectedProjectValue();
 
   const addTask = () => {
+    const parsedTask = parseSlashCommand(task);
+    const taskToAdd = parsedTask || task;
     const projectId = project || selectedProject;
     let collatedDate = '';
 
@@ -33,7 +43,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      taskToAdd &&
       projectId &&
       firebase
         .firestore()
@@ -41,7 +51,7 @@ export const AddTask = ({
         .add({
           archived: false,
           projectId,
-          task,
+          task: taskToAdd,
           date: collatedDate || taskDate,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
