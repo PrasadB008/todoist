@@ -2,6 +2,11 @@ import React from 'react';
 import { render, cleanup } from '@testing-library/react';
 import { App } from '../App';
 
+jest.mock('../hooks', () => ({
+  useTasks: jest.fn(() => ({ tasks: [], archivedTasks: [] })),
+  useProjects: jest.fn(() => ({ projects: [], setProjects: jest.fn() })),
+}));
+
 beforeEach(cleanup); // clean meeeeeeeeee!
 
 describe('<App />', () => {
