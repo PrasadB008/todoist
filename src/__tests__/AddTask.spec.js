@@ -394,5 +394,86 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('parses /todo slash command correctly', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      expect(parseSlashCommand('/todo Buy groceries')).toBe('Buy groceries');
+    });
+
+    it('parses /todo slash command with multiple words', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      expect(parseSlashCommand('/todo Call mom and dad tomorrow')).toBe(
+        'Call mom and dad tomorrow'
+      );
+    });
+
+    it('returns null for non-slash commands', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      expect(parseSlashCommand('Regular task')).toBeNull();
+    });
+
+    it('returns null for /todo without text', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      expect(parseSlashCommand('/todo')).toBeNull();
+    });
+
+    it('returns null for /todo with only spaces', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      expect(parseSlashCommand('/todo   ')).toBeNull();
+    });
+
+    it('adds a task using /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy milk and eggs' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy milk and eggs'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+
+    it('adds a task using /todo slash command with TODAY project', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: 'TODAY',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete project report' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete project report'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
   });
 });
