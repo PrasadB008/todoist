@@ -141,6 +141,88 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  $dm-bg: #1e1e1e;
+  $dm-surface: #282828;
+  $dm-border: 1px solid #3a3a3a;
+  $dm-text: #e6e6e6;
+
+  color: $dm-text;
+  background-color: $dm-bg;
+  min-height: 100vh;
+
+  .sidebar {
+    background-color: $dm-bg;
+    border-right: $dm-border;
+
+    &__project.active, &__project:hover,
+    &__generic li.active, &__generic li:hover {
+      background-color: $dm-surface;
+    }
+
+    &__middle {
+      border-bottom: $dm-border;
+
+      h2, span {
+        color: $dm-text;
+      }
+    }
+
+    &__generic li {
+      color: $dm-text;
+
+      div:nth-child(1) span:first-of-type svg {
+        color: #b5b5b5;
+      }
+    }
+  }
+
+  .tasks {
+    background-color: $dm-surface;
+    border-right: $dm-border;
+    color: $dm-text;
+
+    &__list li {
+      color: $dm-text;
+      border-bottom: $dm-border;
+
+      .checkbox-holder .checkbox {
+        border-color: #8a8a8a;
+        color: $dm-text;
+      }
+    }
+  }
+
+  .add-task__main,
+  .project-delete-modal__inner,
+  .task-date,
+  .project-overlay {
+    background-color: $dm-surface;
+    color: $dm-text;
+  }
+
+  .task-date__list li,
+  .project-overlay__list li {
+    color: $dm-text;
+    border-bottom: $dm-border;
+
+    &:hover {
+      background-color: #333;
+    }
+  }
+
+  .add-task__content,
+  .add-project__name {
+    background-color: $dm-bg !important;
+    border-color: #4a4a4a;
+    color: $dm-text;
+  }
+
+  .add-task__text, .add-project__text,
+  .project-delete-modal__inner span,
+  .add-task__cancel {
+    color: #b5b5b5;
+  }
 }
 
 /* Header
@@ -226,20 +308,51 @@ header {
           }
 
           &.settings__darkmode {
-            button {
-              @include transparent-button();
-              color: white;
-              cursor: pointer;
-              display: -webkit-box;
-              display: -ms-flexbox;
-              display: flex;
+            width: 44px;
 
-              svg {
-                width: 20px;
-                height: 20px;
-              }
+            &:hover {
+              background-color: transparent;
             }
 
+            .dark-toggle {
+              @include transparent-button();
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              padding: 0;
+
+              &__track {
+                position: relative;
+                display: block;
+                width: 36px;
+                height: 18px;
+                border-radius: 9px;
+                background-color: rgba(255,255,255,0.35);
+                transition: background-color 0.2s;
+              }
+
+              &__thumb {
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background-color: white;
+                transition: transform 0.2s;
+              }
+
+              &--on &__track {
+                background-color: #4caf50;
+              }
+
+              &--on &__thumb {
+                transform: translateX(18px);
+              }
+            }
           }
         }
       }
