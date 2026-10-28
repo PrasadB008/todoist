@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -53,6 +53,14 @@ jest.mock('../hooks', () => ({
           'Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me.',
         userId: 'jlIFXIwyAL3tzHMtzRbw',
       },
+      {
+        id: 'future-task',
+        archived: false,
+        date: '01/01/2999',
+        projectId: '1',
+        task: 'A task due far in the future',
+        userId: 'jlIFXIwyAL3tzHMtzRbw',
+      },
     ],
   }),
 }));
@@ -84,6 +92,24 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('🙌 THE OFFICE');
+  });
+
+  it('shows only overdue tasks when the overdue filter is toggled', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => '1'),
+      selectedProject: '1',
+    }));
+
+    const { queryByTestId, queryByText } = render(<Tasks />);
+    expect(queryByText('A task due far in the future')).toBeTruthy();
+
+    fireEvent.click(queryByTestId('overdue-filter'));
+    expect(queryByText('A task due far in the future')).toBeFalsy();
+    expect(queryByText(/Would I rather be feared or loved/)).toBeTruthy();
+    expect(queryByTestId('overdue-filter').textContent).toBe('Show all tasks');
+
+    fireEvent.click(queryByTestId('overdue-filter'));
+    expect(queryByText('A task due far in the future')).toBeTruthy();
   });
 
   it('renders a task with a collated title', () => {
