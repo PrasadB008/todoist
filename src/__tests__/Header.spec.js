@@ -7,6 +7,12 @@ jest.mock('../context', () => ({
   useProjectsValue: jest.fn(() => ({ projects: [] })),
 }));
 
+jest.mock('../hooks', () => ({
+  useTasks: jest.fn(() => ({
+    tasks: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],
+  })),
+}));
+
 beforeEach(cleanup);
 
 describe('<Header />', () => {
@@ -14,6 +20,11 @@ describe('<Header />', () => {
     it('renders the header component', () => {
       const { queryByTestId } = render(<Header />);
       expect(queryByTestId('header')).toBeTruthy();
+    });
+
+    it('renders the number of tasks in the header', () => {
+      const { queryByTestId } = render(<Header />);
+      expect(queryByTestId('task-counter').textContent).toBe('3');
     });
 
     it('renders the header component and activates dark mode using onClick', () => {

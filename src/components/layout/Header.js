@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { FaPizzaSlice } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import { AddTask } from '../AddTask';
+import { useTasks } from '../../hooks';
+import { useSelectedProjectValue } from '../../context';
 
 export const Header = ({ darkMode, setDarkMode }) => {
   const [shouldShowMain, setShouldShowMain] = useState(false);
   const [showQuickAddTask, setShowQuickAddTask] = useState(false);
+  const { selectedProject } = useSelectedProjectValue();
+  const { tasks } = useTasks(selectedProject);
 
   return (
     <header className="header" data-testid="header">
@@ -15,6 +19,14 @@ export const Header = ({ darkMode, setDarkMode }) => {
         </div>
         <div className="settings">
           <ul>
+            <li
+              className="settings__counter"
+              data-testid="task-counter"
+              aria-label="Number of tasks"
+              title="Number of tasks"
+            >
+              {tasks.length}
+            </li>
             <li className="settings__add">
               <button
                 data-testid="quick-add-task-action"

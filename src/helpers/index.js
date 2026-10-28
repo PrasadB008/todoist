@@ -1,10 +1,4 @@
-import moment from 'moment';
 import { collatedTasks } from '../constants';
-
-// A task is overdue when it has a due date (DD/MM/YYYY) earlier than today.
-export const isOverdue = task =>
-  Boolean(task.date) &&
-  moment(task.date, 'DD/MM/YYYY').isBefore(moment(), 'day');
 
 export const getTitle = (projects, projectId) =>
   projects.find(project => project.projectId === projectId);
