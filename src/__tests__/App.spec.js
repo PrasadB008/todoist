@@ -2,6 +2,12 @@ import React from 'react';
 import { render, cleanup, fireEvent } from '@testing-library/react';
 import { App } from '../App';
 
+// The real hooks talk to Firebase, which needs a project config.
+jest.mock('../hooks', () => ({
+  useTasks: () => ({ tasks: [] }),
+  useProjects: () => ({ projects: [], setProjects: jest.fn() }),
+}));
+
 beforeEach(() => {
   cleanup();
   window.localStorage.clear();
