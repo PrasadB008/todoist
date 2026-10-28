@@ -141,6 +141,83 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  .sidebar {
+    background-color: #1e1e1e;
+    border-right-color: #2d2d2d;
+
+    &__project.active,
+    &__project:hover,
+    &__generic li.active,
+    &__generic li:hover {
+      background-color: #2d2d2d;
+    }
+
+    &__generic li,
+    &__middle h2 {
+      color: #e0e0e0;
+    }
+
+    &__middle {
+      border-bottom-color: #2d2d2d;
+    }
+
+    &__generic li div:nth-child(1) span:first-of-type svg {
+      color: #b0b0b0;
+    }
+  }
+
+  .tasks {
+    background-color: #1e1e1e;
+    border-right-color: #2d2d2d;
+    color: #e0e0e0;
+
+    &__list li {
+      color: #e0e0e0;
+      border-bottom-color: #333;
+
+      .checkbox-holder .checkbox {
+        color: #e0e0e0;
+        border-color: #9a9a9a;
+      }
+    }
+  }
+
+  .add-task__text,
+  .add-project__text {
+    color: #b0b0b0;
+  }
+
+  .add-task__content,
+  .add-project__name {
+    background-color: #2d2d2d !important;
+    border-color: #444;
+    color: #e0e0e0;
+  }
+
+  .add-task__overlay .add-task__main,
+  .project-overlay,
+  .task-date,
+  .project-delete-modal__inner {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+  }
+
+  .project-overlay__list li,
+  .task-date__list li {
+    color: #e0e0e0;
+    border-bottom-color: #444;
+
+    &:hover {
+      background-color: #3a3a3a;
+    }
+  }
+}
+
+// The page behind <main> also needs to go dark (see App.js)
+body.darkmode {
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
 /* Header
@@ -234,9 +311,38 @@ header {
               display: -ms-flexbox;
               display: flex;
 
-              svg {
-                width: 20px;
-                height: 20px;
+              &.darkmode-toggle {
+                align-items: center;
+                justify-content: center;
+              }
+
+              .darkmode-toggle__track {
+                position: relative;
+                display: block;
+                width: 26px;
+                height: 14px;
+                border-radius: 7px;
+                background-color: rgba(255,255,255,0.4);
+                transition: background-color 150ms ease-in;
+              }
+
+              .darkmode-toggle__thumb {
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: white;
+                transition: transform 150ms ease-in;
+              }
+
+              &.on .darkmode-toggle__track {
+                background-color: #282828;
+              }
+
+              &.on .darkmode-toggle__thumb {
+                transform: translateX(12px);
               }
             }
 
