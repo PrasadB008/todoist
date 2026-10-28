@@ -3,6 +3,7 @@ import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
+import { USER_ID } from '../constants';
 import { useSelectedProjectValue } from '../context';
 import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
@@ -43,7 +44,7 @@ export const AddTask = ({
           projectId,
           task,
           date: collatedDate || taskDate,
-          userId: 'jlIFXIwyAL3tzHMtzRbw',
+          userId: USER_ID,
         })
         .then(() => {
           setTask('');

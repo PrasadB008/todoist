@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
 import { generatePushId } from '../helpers';
+import { USER_ID } from '../constants';
 import { useProjectsValue } from '../context';
 
 export const AddProject = ({ shouldShow = false }) => {
@@ -19,7 +20,7 @@ export const AddProject = ({ shouldShow = false }) => {
       .add({
         projectId,
         name: projectName,
-        userId: 'jlIFXIwyAL3tzHMtzRbw',
+        userId: USER_ID,
       })
       .then(() => {
         setProjects([...projects]);
