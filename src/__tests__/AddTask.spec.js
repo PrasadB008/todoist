@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { AddTask } from '../components/AddTask';
+import { AddTask, parseSlashCommand } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
 beforeEach(cleanup);
@@ -393,6 +393,175 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
+    });
+  });
+
+  describe('Slash Commands', () => {
+    describe('parseSlashCommand', () => {
+      it('parses /todo command with text', () => {
+        const result = parseSlashCommand('/todo Buy groceries');
+        expect(result).toBe('Buy groceries');
+      });
+
+      it('parses /todo command with multiple words', () => {
+        const result = parseSlashCommand('/todo Call mom and dad tomorrow');
+        expect(result).toBe('Call mom and dad tomorrow');
+      });
+
+      it('parses /todo command with special characters', () => {
+        const result = parseSlashCommand('/todo Fix bug #123 in @component');
+        expect(result).toBe('Fix bug #123 in @component');
+      });
+
+      it('returns null for non-slash commands', () => {
+        const result = parseSlashCommand('Buy groceries');
+        expect(result).toBeNull();
+      });
+
+      it('returns null for /todo without text', () => {
+        const result = parseSlashCommand('/todo');
+        expect(result).toBeNull();
+      });
+
+      it('returns null for /todo with only whitespace', () => {
+        const result = parseSlashCommand('/todo   ');
+        expect(result).toBeNull();
+      });
+
+      it('returns null for other slash commands', () => {
+        const result = parseSlashCommand('/done Buy groceries');
+        expect(result).toBeNull();
+      });
+
+      it('returns null for empty string', () => {
+        const result = parseSlashCommand('');
+        expect(result).toBeNull();
+      });
+    });
+
+    describe('AddTask with /todo slash command', () => {
+      it('adds a task using /todo slash command', () => {
+        useSelectedProjectValue.mockImplementation(() => ({
+          selectedProject: '1',
+        }));
+
+        const showQuickAddTask = true;
+        const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+        const { queryByTestId } = render(
+          <AddTask
+            showQuickAddTask={showQuickAddTask}
+            setShowQuickAddTask={setShowQuickAddTask}
+          />
+        );
+
+        fireEvent.change(queryByTestId('add-task-content'), {
+          target: { value: '/todo Buy milk and eggs' },
+        });
+        expect(queryByTestId('add-task-content').value).toBe(
+          '/todo Buy milk and eggs'
+        );
+
+        fireEvent.click(queryByTestId('add-task'));
+        expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
+
+      it('adds a task using /todo slash command to TODAY project', () => {
+        useSelectedProjectValue.mockImplementation(() => ({
+          selectedProject: 'TODAY',
+        }));
+
+        const showQuickAddTask = true;
+        const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+        const { queryByTestId } = render(
+          <AddTask
+            showQuickAddTask={showQuickAddTask}
+            setShowQuickAddTask={setShowQuickAddTask}
+          />
+        );
+
+        fireEvent.change(queryByTestId('add-task-content'), {
+          target: { value: '/todo Complete project report' },
+        });
+        expect(queryByTestId('add-task-content').value).toBe(
+          '/todo Complete project report'
+        );
+
+        fireEvent.click(queryByTestId('add-task'));
+        expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
+
+      it('adds a task using /todo slash command to NEXT_7 project', () => {
+        useSelectedProjectValue.mockImplementation(() => ({
+          selectedProject: 'NEXT_7',
+        }));
+
+        const showQuickAddTask = true;
+        const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+        const { queryByTestId } = render(
+          <AddTask
+            showQuickAddTask={showQuickAddTask}
+            setShowQuickAddTask={setShowQuickAddTask}
+          />
+        );
+
+        fireEvent.change(queryByTestId('add-task-content'), {
+          target: { value: '/todo Schedule meeting with team' },
+        });
+        expect(queryByTestId('add-task-content').value).toBe(
+          '/todo Schedule meeting with team'
+        );
+
+        fireEvent.click(queryByTestId('add-task'));
+        expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
+
+      it('does not add a task with /todo but no text', () => {
+        useSelectedProjectValue.mockImplementation(() => ({
+          selectedProject: '1',
+        }));
+
+        const showQuickAddTask = true;
+        const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+        const { queryByTestId } = render(
+          <AddTask
+            showQuickAddTask={showQuickAddTask}
+            setShowQuickAddTask={setShowQuickAddTask}
+          />
+        );
+
+        fireEvent.change(queryByTestId('add-task-content'), {
+          target: { value: '/todo' },
+        });
+        expect(queryByTestId('add-task-content').value).toBe('/todo');
+
+        fireEvent.click(queryByTestId('add-task'));
+        expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      });
+
+      it('adds a task using /todo slash command with special characters', () => {
+        useSelectedProjectValue.mockImplementation(() => ({
+          selectedProject: '1',
+        }));
+
+        const showQuickAddTask = true;
+        const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+        const { queryByTestId } = render(
+          <AddTask
+            showQuickAddTask={showQuickAddTask}
+            setShowQuickAddTask={setShowQuickAddTask}
+          />
+        );
+
+        fireEvent.change(queryByTestId('add-task-content'), {
+          target: { value: '/todo Fix bug #456 in @module (urgent!)' },
+        });
+        expect(queryByTestId('add-task-content').value).toBe(
+          '/todo Fix bug #456 in @module (urgent!)'
+        );
+
+        fireEvent.click(queryByTestId('add-task'));
+        expect(setShowQuickAddTask).toHaveBeenCalled();
+      });
     });
   });
 });
