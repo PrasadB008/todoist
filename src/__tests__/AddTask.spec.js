@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { AddTask } from '../components/AddTask';
+import { AddTask, parseSlashCommand } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
 beforeEach(cleanup);
@@ -394,5 +394,43 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
-  });
-});
+    });
+    });
+
+    describe('parseSlashCommand', () => {
+    it('parses /todo command with text', () => {
+    const result = parseSlashCommand('/todo Buy groceries');
+    expect(result.isCommand).toBe(true);
+    expect(result.taskText).toBe('Buy groceries');
+    });
+
+    it('parses /todo command with multiple words', () => {
+    const result = parseSlashCommand('/todo Call mom and dad');
+    expect(result.isCommand).toBe(true);
+    expect(result.taskText).toBe('Call mom and dad');
+    });
+
+    it('parses /todo command with special characters', () => {
+    const result = parseSlashCommand('/todo Fix bug #123 in @component');
+    expect(result.isCommand).toBe(true);
+    expect(result.taskText).toBe('Fix bug #123 in @component');
+    });
+
+    it('returns false for non-slash commands', () => {
+    const result = parseSlashCommand('Buy groceries');
+    expect(result.isCommand).toBe(false);
+    expect(result.taskText).toBe('Buy groceries');
+    });
+
+    it('returns false for /todo without text', () => {
+    const result = parseSlashCommand('/todo');
+    expect(result.isCommand).toBe(false);
+    expect(result.taskText).toBe('/todo');
+    });
+
+    it('returns false for /todo with only whitespace', () => {
+    const result = parseSlashCommand('/todo   ');
+    expect(result.isCommand).toBe(false);
+    expect(result.taskText).toBe('/todo   ');
+    });
+    });
