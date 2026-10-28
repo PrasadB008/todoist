@@ -4,6 +4,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
 import { useSelectedProjectValue } from '../context';
+import { useAuthValue } from '../context/auth-context';
 import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
 
@@ -21,6 +22,7 @@ export const AddTask = ({
   const [showTaskDate, setShowTaskDate] = useState(false);
 
   const { selectedProject } = useSelectedProjectValue();
+  const { currentUser } = useAuthValue();
 
   const addTask = () => {
     const projectId = project || selectedProject;
@@ -35,6 +37,7 @@ export const AddTask = ({
     return (
       task &&
       projectId &&
+      currentUser &&
       firebase
         .firestore()
         .collection('tasks')
@@ -43,7 +46,7 @@ export const AddTask = ({
           projectId,
           task,
           date: collatedDate || taskDate,
-          userId: 'jlIFXIwyAL3tzHMtzRbw',
+          userId: currentUser.uid,
         })
         .then(() => {
           setTask('');

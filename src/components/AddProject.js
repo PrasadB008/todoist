@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
 import { generatePushId } from '../helpers';
 import { useProjectsValue } from '../context';
+import { useAuthValue } from '../context/auth-context';
 
 export const AddProject = ({ shouldShow = false }) => {
   const [show, setShow] = useState(shouldShow);
@@ -10,16 +11,18 @@ export const AddProject = ({ shouldShow = false }) => {
 
   const projectId = generatePushId();
   const { projects, setProjects } = useProjectsValue();
+  const { currentUser } = useAuthValue();
 
   const addProject = () =>
     projectName &&
+    currentUser &&
     firebase
       .firestore()
       .collection('projects')
       .add({
         projectId,
         name: projectName,
-        userId: 'jlIFXIwyAL3tzHMtzRbw',
+        userId: currentUser.uid,
       })
       .then(() => {
         setProjects([...projects]);

@@ -10,6 +10,10 @@ jest.mock('../context', () => ({
   useProjectsValue: jest.fn(() => ({ projects: [] })),
 }));
 
+jest.mock('../context/auth-context', () => ({
+  useAuthValue: jest.fn(() => ({ currentUser: { uid: 'test-user' } })),
+}));
+
 jest.mock('../firebase', () => ({
   firebase: {
     firestore: jest.fn(() => ({
