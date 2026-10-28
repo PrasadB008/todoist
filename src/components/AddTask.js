@@ -23,7 +23,7 @@ export const AddTask = ({
   const { selectedProject } = useSelectedProjectValue();
 
   const parseSlashCommand = (input) => {
-    const todoMatch = input.match(/^\/todo\s+(.+)$/);
+    const todoMatch = input.match(/^\/todo\s+(\S.*)$/);
     if (todoMatch) {
       return todoMatch[1];
     }
@@ -31,7 +31,14 @@ export const AddTask = ({
   };
 
   const addTask = () => {
-    const parsedTask = parseSlashCommand(task) || task;
+    // Check if input starts with /todo
+    const isSlashCommand = task.startsWith('/todo');
+    const parsedTask = isSlashCommand ? parseSlashCommand(task) : task;
+    
+    // If it's a slash command but parsing failed, don't add the task
+    if (isSlashCommand && !parsedTask) {
+      return false;
+    }
     const projectId = project || selectedProject;
     let collatedDate = '';
 
@@ -42,7 +49,7 @@ export const AddTask = ({
     }
 
     return (
-      task &&
+      parsedTask &&
       projectId &&
       firebase
         .firestore()
