@@ -444,7 +444,7 @@ describe('<AddTask />', () => {
 
     it('should parse /todo with leading/trailing spaces in text', () => {
       const result = parseSlashCommand('/todo   task with spaces  ');
-      expect(result).toBe('task with spaces  ');
+      expect(result).toBe('task with spaces');
     });
 
     it('should parse /todo with punctuation', () => {
