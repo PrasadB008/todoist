@@ -33,6 +33,9 @@ export const Tasks = () => {
   return (
     <div className="tasks" data-testid="tasks">
       <h2 data-testid="project-name">{projectName}</h2>
+      <p className="tasks__count" data-testid="task-count">
+        {tasks.length} {tasks.length === 1 ? 'task' : 'tasks'}
+      </p>
 
       <ul className="tasks__list">
         {tasks.map((task) => (
