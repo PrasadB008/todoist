@@ -395,4 +395,136 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('/todo slash command', () => {
+    it('should add a task when /todo command is used', async () => {
+      const { queryByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          setShowMain={mockSetShowMain}
+          setShowProjectOverlay={mockSetShowProjectOverlay}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo Buy groceries' } });
+
+      await waitFor(() => {
+        expect(mockAdd).toHaveBeenCalledWith({
+          archived: false,
+          projectId: 'INBOX',
+          task: 'Buy groceries',
+          date: '',
+          userId: 'jlIFXIwyAL3tzHMtzRbw',
+        });
+      });
+    });
+
+    it('should not add a task if /todo command has no text', () => {
+      const { queryByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          setShowMain={mockSetShowMain}
+          setShowProjectOverlay={mockSetShowProjectOverlay}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo ' } });
+
+      expect(mockAdd).not.toHaveBeenCalled();
+    });
+
+    it('should trim whitespace in /todo command text', async () => {
+      const { queryByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          setShowMain={mockSetShowMain}
+          setShowProjectOverlay={mockSetShowProjectOverlay}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo   Task with spaces   ' } });
+
+      await waitFor(() => {
+        expect(mockAdd).toHaveBeenCalledWith({
+          archived: false,
+          projectId: 'INBOX',
+          task: 'Task with spaces',
+          date: '',
+          userId: 'jlIFXIwyAL3tzHMtzRbw',
+        });
+      });
+    });
+
+    it('should use TODAY date when project is TODAY', async () => {
+      const { queryByTestId } = render(
+        <AddTask
+          project="TODAY"
+          selectedProject="TODAY"
+          setShowMain={mockSetShowMain}
+          setShowProjectOverlay={mockSetShowProjectOverlay}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo Complete report' } });
+
+      await waitFor(() => {
+        expect(mockAdd).toHaveBeenCalledWith(
+          expect.objectContaining({
+            task: 'Complete report',
+            projectId: 'TODAY',
+            date: moment().format('DD/MM/YYYY'),
+          })
+        );
+      });
+    });
+
+    it('should use NEXT_7 date when project is NEXT_7', async () => {
+      const { queryByTestId } = render(
+        <AddTask
+          project="NEXT_7"
+          selectedProject="NEXT_7"
+          setShowMain={mockSetShowMain}
+          setShowProjectOverlay={mockSetShowProjectOverlay}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo Schedule meeting' } });
+
+      await waitFor(() => {
+        expect(mockAdd).toHaveBeenCalledWith(
+          expect.objectContaining({
+            task: 'Schedule meeting',
+            projectId: 'NEXT_7',
+            date: moment().add(7, 'days').format('DD/MM/YYYY'),
+          })
+        );
+      });
+    });
+
+    it('should clear input after /todo command is executed', async () => {
+      const { queryByTestId } = render(
+        <AddTask
+          project="INBOX"
+          selectedProject="INBOX"
+          setShowMain={mockSetShowMain}
+          setShowProjectOverlay={mockSetShowProjectOverlay}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-content');
+      fireEvent.change(taskInput, { target: { value: '/todo New task' } });
+
+      await waitFor(() => {
+        expect(taskInput.value).toBe('');
+      });
+    });
+  });
 });
