@@ -489,6 +489,16 @@ header {
     margin-top: 20px;
   }
 
+  &__search {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: $generic-border;
+    border-radius: 3px;
+  }
+
   &__list li {
     display: -webkit-box;
     display: -ms-flexbox;
