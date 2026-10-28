@@ -1,8 +1,11 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { App } from '../App';
 
-beforeEach(cleanup); // clean meeeeeeeeee!
+beforeEach(() => {
+  cleanup(); // clean meeeeeeeeee!
+  window.localStorage.clear();
+});
 
 describe('<App />', () => {
   it('renders the application', () => {
@@ -19,5 +22,22 @@ describe('<App />', () => {
     expect(
       queryByTestId('application').classList.contains('darkmode')
     ).toBeTruthy();
+  });
+
+  it('toggles dark mode on and off with the switch and remembers it', () => {
+    const { queryByTestId } = render(<App />);
+    const toggle = queryByTestId('dark-mode-action');
+    const app = queryByTestId('application');
+
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
+
+    fireEvent.click(toggle);
+    expect(app.classList.contains('darkmode')).toBeTruthy();
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+    expect(window.localStorage.getItem('darkMode')).toBe('true');
+
+    fireEvent.click(toggle);
+    expect(app.classList.contains('darkmode')).toBeFalsy();
+    expect(window.localStorage.getItem('darkMode')).toBe('false');
   });
 });
