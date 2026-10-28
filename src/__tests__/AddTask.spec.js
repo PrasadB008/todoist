@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { AddTask } from '../components/AddTask';
+import { AddTask, parseSlashCommand } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
 beforeEach(cleanup);
@@ -393,6 +393,117 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
+    });
+  });
+
+  describe('parseSlashCommand', () => {
+    it('should parse /todo command with text', () => {
+      expect(parseSlashCommand('/todo buy groceries')).toBe('buy groceries');
+    });
+
+    it('should parse /todo command with multiple words', () => {
+      expect(parseSlashCommand('/todo call mom tomorrow at 3pm')).toBe(
+        'call mom tomorrow at 3pm'
+      );
+    });
+
+    it('should parse /todo command with leading/trailing spaces in text', () => {
+      expect(parseSlashCommand('/todo   task with spaces   ')).toBe(
+        'task with spaces'
+      );
+    });
+
+    it('should return null for /todo without text', () => {
+      expect(parseSlashCommand('/todo')).toBeNull();
+    });
+
+    it('should return null for /todo with only spaces', () => {
+      expect(parseSlashCommand('/todo   ')).toBeNull();
+    });
+
+    it('should return null for regular text without slash command', () => {
+      expect(parseSlashCommand('buy groceries')).toBeNull();
+    });
+
+    it('should return null for empty string', () => {
+      expect(parseSlashCommand('')).toBeNull();
+    });
+
+    it('should return null for other slash commands', () => {
+      expect(parseSlashCommand('/done task')).toBeNull();
+    });
+
+    it('should parse /todo with special characters', () => {
+      expect(parseSlashCommand('/todo buy milk & eggs (2x)')).toBe(
+        'buy milk & eggs (2x)'
+      );
+    });
+
+    it('should parse /todo with numbers', () => {
+      expect(parseSlashCommand('/todo task #123 priority 1')).toBe(
+        'task #123 priority 1'
+      );
+    });
+  });
+
+  describe('AddTask with /todo slash command', () => {
+    it('should add task with /todo command', () => {
+      const { queryByTestId } = render(
+        <AddTask
+          showAddTaskMain={true}
+          shouldShowMain={jest.fn()}
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          showTaskDate={false}
+          setShowTaskDate={jest.fn()}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo buy milk' } });
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(queryByTestId('add-task-input').value).toBe('');
+    });
+
+    it('should add task with /todo command containing multiple words', () => {
+      const { queryByTestId } = render(
+        <AddTask
+          showAddTaskMain={true}
+          shouldShowMain={jest.fn()}
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          showTaskDate={false}
+          setShowTaskDate={jest.fn()}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-input');
+      fireEvent.change(taskInput, {
+        target: { value: '/todo call mom tomorrow at 3pm' },
+      });
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(queryByTestId('add-task-input').value).toBe('');
+    });
+
+    it('should not add task with /todo command without text', () => {
+      const { queryByTestId } = render(
+        <AddTask
+          showAddTaskMain={true}
+          shouldShowMain={jest.fn()}
+          showProjectOverlay={false}
+          setShowProjectOverlay={jest.fn()}
+          showTaskDate={false}
+          setShowTaskDate={jest.fn()}
+        />
+      );
+
+      const taskInput = queryByTestId('add-task-input');
+      fireEvent.change(taskInput, { target: { value: '/todo' } });
+      fireEvent.click(queryByTestId('add-task'));
+
+      expect(queryByTestId('add-task-input').value).toBe('/todo');
     });
   });
 });
