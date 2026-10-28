@@ -515,7 +515,7 @@ describe('<AddTask />', () => {
         expect(setShowQuickAddTask).toHaveBeenCalled();
       });
 
-      it('does not add a task with /todo but no text', () => {
+      it('adds a task with /todo but no text (adds /todo as the task)', () => {
         useSelectedProjectValue.mockImplementation(() => ({
           selectedProject: '1',
         }));
@@ -535,7 +535,7 @@ describe('<AddTask />', () => {
         expect(queryByTestId('add-task-content').value).toBe('/todo');
 
         fireEvent.click(queryByTestId('add-task'));
-        expect(setShowQuickAddTask).not.toHaveBeenCalled();
+        expect(setShowQuickAddTask).toHaveBeenCalled();
       });
 
       it('adds a task using /todo slash command with special characters', () => {
