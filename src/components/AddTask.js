@@ -8,7 +8,7 @@ import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
 
 const parseSlashCommand = (input) => {
-  const todoMatch = input.match(/^\/todo\s+(.+)$/);
+  const todoMatch = input.match(/^\/todo\s+(\S.*)$/);
   if (todoMatch) {
     return todoMatch[1];
   }
@@ -37,7 +37,11 @@ export const AddTask = ({
 
     // Parse slash command
     const parsedText = parseSlashCommand(task);
-    if (parsedText) {
+    if (task.startsWith('/todo')) {
+      // If input starts with /todo, it must parse successfully
+      if (!parsedText) {
+        return false;
+      }
       taskText = parsedText;
     }
 
