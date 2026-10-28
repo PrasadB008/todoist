@@ -95,7 +95,9 @@ describe('<Tasks />', () => {
     const { queryByTestId, queryByText, getByTestId } = render(<Tasks />);
     expect(queryByText(/feared or loved/)).toBeTruthy();
 
-    fireEvent.change(getByTestId('task-search'), { target: { value: 'LOVED' } });
+    fireEvent.change(getByTestId('task-search'), {
+      target: { value: 'LOVED' },
+    });
     expect(queryByText(/feared or loved/)).toBeTruthy();
 
     fireEvent.change(getByTestId('task-search'), { target: { value: 'zzz' } });
