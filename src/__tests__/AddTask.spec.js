@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { AddTask } from '../components/AddTask';
+import { AddTask, parseSlashCommand } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
 beforeEach(cleanup);
@@ -398,49 +398,41 @@ describe('<AddTask />', () => {
 
   describe('parseSlashCommand', () => {
     it('should parse /todo command with text', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/todo Buy groceries');
       expect(result).toBe('Buy groceries');
     });
 
     it('should parse /todo command with multiple words', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/todo Call mom and dad tomorrow');
       expect(result).toBe('Call mom and dad tomorrow');
     });
 
     it('should return null for non-slash commands', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('Buy groceries');
       expect(result).toBeNull();
     });
 
     it('should return null for /todo without text', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/todo');
       expect(result).toBeNull();
     });
 
     it('should return null for /todo with only whitespace', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/todo   ');
       expect(result).toBeNull();
     });
 
     it('should not match other slash commands', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/done Buy groceries');
       expect(result).toBeNull();
     });
 
     it('should handle /todo with special characters', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/todo Buy milk & eggs (2x)');
       expect(result).toBe('Buy milk & eggs (2x)');
     });
 
     it('should handle /todo with numbers', () => {
-      const { parseSlashCommand } = require('../components/AddTask');
       const result = parseSlashCommand('/todo Buy 5 apples');
       expect(result).toBe('Buy 5 apples');
     });
