@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -84,6 +84,33 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('🙌 THE OFFICE');
+  });
+
+  it('renders a dark mode switch that toggles dark mode', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+    const setDarkMode = jest.fn();
+
+    const { getByTestId } = render(
+      <Tasks darkMode={false} setDarkMode={setDarkMode} />
+    );
+    const toggle = getByTestId('tasks-dark-mode-toggle');
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
+
+    fireEvent.click(toggle);
+    expect(setDarkMode).toHaveBeenCalledWith(true);
+  });
+
+  it('does not render the dark mode switch without a setter', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+
+    const { queryByTestId } = render(<Tasks />);
+    expect(queryByTestId('tasks-dark-mode-toggle')).toBeFalsy();
   });
 
   it('renders a task with a collated title', () => {

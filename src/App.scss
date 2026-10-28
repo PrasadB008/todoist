@@ -141,6 +141,111 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  .sidebar {
+    background-color: #1f1f1f;
+    border-right-color: #333;
+
+    &__middle {
+      border-bottom-color: #333;
+
+      h2 {
+        color: #ddd;
+      }
+
+      span {
+        color: #aaa;
+      }
+    }
+
+    &__generic li,
+    &__project {
+      color: #ddd;
+
+      svg {
+        color: #aaa;
+      }
+    }
+
+    &__generic li.active,
+    &__generic li:hover,
+    &__project.active,
+    &__project:hover {
+      background-color: #333;
+    }
+  }
+
+  .tasks {
+    background-color: #1a1a1a;
+    border-right-color: #333;
+    color: #eee;
+
+    h2 {
+      color: #eee;
+    }
+
+    &__list li {
+      color: #ddd;
+      border-bottom-color: #333;
+
+      .checkbox-holder .checkbox {
+        border-color: #aaa;
+      }
+    }
+  }
+
+  .add-task {
+    &__text {
+      color: #bbb;
+    }
+
+    &__overlay .add-task__main {
+      background-color: #262626;
+      color: #eee;
+    }
+
+    &__content {
+      background-color: #333 !important;
+      border-color: #444;
+      color: #eee;
+    }
+
+    &__cancel {
+      color: #bbb;
+    }
+  }
+
+  .add-project {
+    &__text {
+      color: #bbb;
+    }
+
+    &__name {
+      background-color: #333 !important;
+      border-color: #444;
+      color: #eee;
+    }
+
+    &__cancel {
+      color: #bbb;
+    }
+  }
+
+  .task-date,
+  .project-overlay,
+  .project-delete-modal__inner {
+    background-color: #262626;
+    color: #eee;
+
+    li {
+      color: #ddd;
+      border-bottom-color: #333;
+
+      &:hover {
+        background-color: #333;
+      }
+    }
+  }
 }
 
 /* Header
@@ -487,6 +592,56 @@ header {
 
   .add-task {
     margin-top: 20px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__darkmode-toggle {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: inherit;
+
+    .toggle-track {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+      margin-left: 8px;
+      border-radius: 10px;
+      background-color: #ccc;
+      transition: background-color 0.2s;
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #fff;
+      transition: transform 0.2s;
+    }
+
+    &[aria-checked='true'] {
+      .toggle-track {
+        background-color: $generic-bg;
+      }
+
+      .toggle-thumb {
+        transform: translateX(16px);
+      }
+    }
   }
 
   &__list li {
