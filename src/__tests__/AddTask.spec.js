@@ -449,7 +449,7 @@ describe('<AddTask />', () => {
       expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
-    it('does not parse /todo without text after it', () => {
+    it('adds task with /todo when no text follows (falls back to original input)', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -471,11 +471,11 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo');
 
       fireEvent.click(queryByTestId('add-task'));
-      // Should not call setShowQuickAddTask because task is empty after parsing
-      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      // Falls back to original input when no text after /todo
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
-    it('does not parse /todo with only whitespace after it', () => {
+    it('adds task with /todo when only whitespace follows (falls back to original input)', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -497,8 +497,8 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo   ');
 
       fireEvent.click(queryByTestId('add-task'));
-      // Should not call setShowQuickAddTask because task is empty after parsing
-      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      // Falls back to original input when only whitespace after /todo
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
     it('adds regular task without /todo slash command', () => {
