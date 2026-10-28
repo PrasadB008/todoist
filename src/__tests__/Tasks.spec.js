@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -95,5 +95,23 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('Inbox');
+  });
+
+  it('filters tasks by title as the user types', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+
+    const { queryByTestId, queryByText } = render(<Tasks />);
+    const input = queryByTestId('task-search');
+
+    fireEvent.change(input, { target: { value: 'FEARED' } });
+    expect(queryByText(/Would I rather be feared/)).toBeTruthy();
+    expect(queryByTestId('no-results')).toBeFalsy();
+
+    fireEvent.change(input, { target: { value: 'zzz' } });
+    expect(queryByText(/Would I rather be feared/)).toBeFalsy();
+    expect(queryByTestId('no-results')).toBeTruthy();
   });
 });
