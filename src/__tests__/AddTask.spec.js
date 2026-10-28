@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { AddTask } from '../components/AddTask';
+import { AddTask, parseSlashCommand } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
 beforeEach(cleanup);
@@ -393,6 +393,68 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
+    });
+  });
+
+  describe('parseSlashCommand', () => {
+    it('should parse /todo command with single word', () => {
+      const result = parseSlashCommand('/todo hello');
+      expect(result).toBe('hello');
+    });
+
+    it('should parse /todo command with multiple words', () => {
+      const result = parseSlashCommand('/todo buy groceries');
+      expect(result).toBe('buy groceries');
+    });
+
+    it('should parse /todo command with special characters', () => {
+      const result = parseSlashCommand('/todo call @john (urgent)');
+      expect(result).toBe('call @john (urgent)');
+    });
+
+    it('should parse /todo command with numbers', () => {
+      const result = parseSlashCommand('/todo task 123 with numbers');
+      expect(result).toBe('task 123 with numbers');
+    });
+
+    it('should return null for /todo without text', () => {
+      const result = parseSlashCommand('/todo');
+      expect(result).toBeNull();
+    });
+
+    it('should return null for /todo with only whitespace', () => {
+      const result = parseSlashCommand('/todo   ');
+      expect(result).toBeNull();
+    });
+
+    it('should return null for regular text without /todo', () => {
+      const result = parseSlashCommand('buy groceries');
+      expect(result).toBeNull();
+    });
+
+    it('should return null for /todo in the middle of text', () => {
+      const result = parseSlashCommand('some text /todo task');
+      expect(result).toBeNull();
+    });
+
+    it('should return null for similar commands like /todos', () => {
+      const result = parseSlashCommand('/todos task');
+      expect(result).toBeNull();
+    });
+
+    it('should parse /todo with leading/trailing spaces in text', () => {
+      const result = parseSlashCommand('/todo   task with spaces  ');
+      expect(result).toBe('task with spaces  ');
+    });
+
+    it('should parse /todo with punctuation', () => {
+      const result = parseSlashCommand('/todo finish project!');
+      expect(result).toBe('finish project!');
+    });
+
+    it('should parse /todo with emoji', () => {
+      const result = parseSlashCommand('/todo buy 🍎 apples');
+      expect(result).toBe('buy 🍎 apples');
     });
   });
 });
