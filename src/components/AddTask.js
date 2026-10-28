@@ -27,6 +27,10 @@ export const AddTask = ({
     if (todoMatch) {
       return todoMatch[1];
     }
+    // If input starts with /todo but doesn't match the full pattern, return empty string
+    if (input.startsWith('/todo')) {
+      return '';
+    }
     return input;
   };
 
@@ -35,32 +39,34 @@ export const AddTask = ({
     let collatedDate = '';
     const parsedTask = parseSlashCommand(task);
 
+    if (!parsedTask || !projectId) {
+      return false;
+    }
+
     if (projectId === 'TODAY') {
       collatedDate = moment().format('DD/MM/YYYY');
     } else if (projectId === 'NEXT_7') {
       collatedDate = moment().add(7, 'days').format('DD/MM/YYYY');
     }
 
-    return (
-      parsedTask &&
-      projectId &&
-      firebase
-        .firestore()
-        .collection('tasks')
-        .add({
-          archived: false,
-          projectId,
-          task: parsedTask,
-          date: collatedDate || taskDate,
-          userId: 'jlIFXIwyAL3tzHMtzRbw',
-        })
-        .then(() => {
-          setTask('');
-          setProject('');
-          setShowMain('');
-          setShowProjectOverlay(false);
-        })
-    );
+    firebase
+      .firestore()
+      .collection('tasks')
+      .add({
+        archived: false,
+        projectId,
+        task: parsedTask,
+        date: collatedDate || taskDate,
+        userId: 'jlIFXIwyAL3tzHMtzRbw',
+      })
+      .then(() => {
+        setTask('');
+        setProject('');
+        setShowMain('');
+        setShowProjectOverlay(false);
+      });
+
+    return true;
   };
 
   return (
