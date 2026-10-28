@@ -395,4 +395,61 @@ describe('<AddTask />', () => {
       fireEvent.click(queryByTestId('add-task'));
     });
   });
+
+  describe('/todo slash command', () => {
+    it('parses /todo command with simple text', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      const result = parseSlashCommand('/todo Buy groceries');
+      expect(result).toBe('Buy groceries');
+    });
+
+    it('parses /todo command with multiple words', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      const result = parseSlashCommand('/todo Call mom and dad tomorrow');
+      expect(result).toBe('Call mom and dad tomorrow');
+    });
+
+    it('parses /todo command with special characters', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      const result = parseSlashCommand('/todo Fix bug #123 in @component');
+      expect(result).toBe('Fix bug #123 in @component');
+    });
+
+    it('returns null for non-slash commands', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      const result = parseSlashCommand('Regular task text');
+      expect(result).toBeNull();
+    });
+
+    it('returns null for /todo without text', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      const result = parseSlashCommand('/todo');
+      expect(result).toBeNull();
+    });
+
+    it('returns null for /todo with only whitespace', () => {
+      const { parseSlashCommand } = require('../components/AddTask');
+      const result = parseSlashCommand('/todo   ');
+      expect(result).toBeNull();
+    });
+
+    it('adds a task using /todo slash command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const { queryByTestId } = render(<AddTask showMain />);
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy milk and eggs' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy milk and eggs'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+    });
+  });
 });
