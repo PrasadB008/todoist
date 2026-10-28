@@ -39,6 +39,9 @@ export const AddTask = ({
     const slashCommandText = parseSlashCommand(task);
     if (slashCommandText) {
       taskText = slashCommandText;
+    } else if (task.startsWith('/todo')) {
+      // If input starts with /todo but no valid text was extracted, don't add
+      return false;
     }
 
     if (projectId === 'TODAY') {
