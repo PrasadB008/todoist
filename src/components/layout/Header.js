@@ -33,7 +33,9 @@ export const Header = ({ darkMode, setDarkMode }) => {
                 aria-label="Dark mode"
                 role="switch"
                 aria-checked={!!darkMode}
-                className={darkMode ? 'dark-toggle dark-toggle--on' : 'dark-toggle'}
+                className={
+                  darkMode ? 'dark-toggle dark-toggle--on' : 'dark-toggle'
+                }
                 type="button"
                 onClick={() => setDarkMode(!darkMode)}
               >
