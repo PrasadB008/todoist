@@ -21,12 +21,12 @@ describe('<App />', () => {
 
     fireEvent.click(toggle);
     expect(app.classList.contains('darkmode')).toBeTruthy();
-    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
     expect(window.localStorage.getItem('darkMode')).toBe('true');
 
     fireEvent.click(toggle);
     expect(app.classList.contains('darkmode')).toBeFalsy();
-    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
     expect(window.localStorage.getItem('darkMode')).toBe('false');
   });
 
