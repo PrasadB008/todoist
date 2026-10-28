@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -84,6 +84,23 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('🙌 THE OFFICE');
+  });
+
+  it('filters tasks using the search box', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+
+    const { queryByTestId, queryByText, getByTestId } = render(<Tasks />);
+    expect(queryByText(/feared or loved/)).toBeTruthy();
+
+    fireEvent.change(getByTestId('task-search'), { target: { value: 'LOVED' } });
+    expect(queryByText(/feared or loved/)).toBeTruthy();
+
+    fireEvent.change(getByTestId('task-search'), { target: { value: 'zzz' } });
+    expect(queryByText(/feared or loved/)).toBeFalsy();
+    expect(queryByTestId('no-search-results')).toBeTruthy();
   });
 
   it('renders a task with a collated title', () => {
