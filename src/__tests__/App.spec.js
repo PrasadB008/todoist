@@ -19,5 +19,12 @@ describe('<App />', () => {
     expect(
       queryByTestId('application').classList.contains('darkmode')
     ).toBeTruthy();
+    expect(document.body.classList.contains('darkmode')).toBeTruthy();
+  });
+
+  it('removes the dark mode class from the page body when unmounted', () => {
+    const { unmount } = render(<App darkModeDefault />);
+    unmount();
+    expect(document.body.classList.contains('darkmode')).toBeFalsy();
   });
 });
