@@ -10,7 +10,8 @@ import { TaskDate } from './TaskDate';
 export const parseSlashCommand = (input) => {
   const todoMatch = input.match(/^\/todo\s+(.+)$/);
   if (todoMatch) {
-    return todoMatch[1];
+    const text = todoMatch[1].trim();
+    return text.length > 0 ? text : null;
   }
   return null;
 };
