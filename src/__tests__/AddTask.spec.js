@@ -394,5 +394,124 @@ describe('<AddTask />', () => {
 
       fireEvent.click(queryByTestId('add-task'));
     });
+
+    it('parses /todo slash command and adds task with extracted text', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy groceries' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo Buy groceries');
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+
+    it('parses /todo command with multiple words', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Complete project report by Friday' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Complete project report by Friday'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
+
+    it('does not parse /todo without text after it', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo');
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+    });
+
+    it('does not parse /todo with only whitespace after it', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo   ' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe('/todo   ');
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+    });
+
+    it('does not parse /todo when it is not at the start', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: 'Remember /todo Buy milk' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        'Remember /todo Buy milk'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
+    });
   });
 });
