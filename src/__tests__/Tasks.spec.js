@@ -4,6 +4,7 @@ import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
 jest.mock('../context', () => ({
+  useAuthValue: jest.fn(() => ({ user: { uid: 'test-user-uid' } })),
   useSelectedProjectValue: jest.fn(),
   useProjectsValue: jest.fn(() => ({
     projects: [
