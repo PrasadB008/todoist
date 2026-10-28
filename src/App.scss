@@ -141,6 +141,98 @@ $generic-bg: #db4c3f;
     background-color: #282828;
     border-color: transparent;
   }
+
+  .sidebar {
+    background-color: #1e1e1e;
+    border-right-color: #333;
+    color: #e0e0e0;
+
+    &__middle {
+      border-bottom-color: #333;
+
+      h2 {
+        color: #e0e0e0;
+      }
+
+      span {
+        color: #bdbdbd;
+      }
+    }
+
+    &__generic li {
+      color: #e0e0e0;
+
+      svg {
+        color: #bdbdbd;
+      }
+
+      &.active, &:hover {
+        background-color: #2d2d2d;
+      }
+    }
+
+    &__project {
+      &.active, &:hover {
+        background-color: #2d2d2d;
+      }
+    }
+  }
+
+  .tasks {
+    background-color: #1e1e1e;
+    border-right-color: #333;
+    color: #e0e0e0;
+
+    h2 {
+      color: #e0e0e0;
+    }
+
+    &__list li {
+      color: #e0e0e0;
+      border-bottom-color: #333;
+
+      .checkbox-holder .checkbox {
+        border-color: #9e9e9e;
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  .add-task__text,
+  .add-project__text {
+    color: #bdbdbd;
+  }
+
+  .add-task__main,
+  .project-overlay,
+  .task-date,
+  .project-delete-modal__inner {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+  }
+
+  .add-task__content,
+  .add-project__name {
+    background-color: #2a2a2a !important;
+    border-color: #444;
+    color: #e0e0e0;
+  }
+
+  .project-overlay__list li,
+  .task-date__list li {
+    color: #e0e0e0;
+    border-bottom-color: #333;
+
+    &:hover {
+      background-color: #353535;
+    }
+  }
+
+  .add-task__cancel,
+  .add-project__cancel,
+  .project-delete-modal__inner span {
+    color: #bdbdbd;
+  }
 }
 
 /* Header
