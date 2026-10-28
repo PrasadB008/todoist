@@ -489,6 +489,22 @@ header {
     margin-top: 20px;
   }
 
+  &__clear-completed {
+    margin-top: 20px;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: #db4c3f;
+    background: transparent;
+    border: 1px solid #db4c3f;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover {
+      background: #db4c3f;
+      color: #fff;
+    }
+  }
+
   &__list li {
     display: -webkit-box;
     display: -ms-flexbox;

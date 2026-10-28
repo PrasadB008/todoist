@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Tasks } from '../components/Tasks';
 import { useSelectedProjectValue } from '../context';
 
@@ -43,6 +43,7 @@ jest.mock('../context', () => ({
 
 jest.mock('../hooks', () => ({
   useTasks: () => ({
+    archivedTasks: [{ id: 'done1', archived: true, task: 'Done task' }],
     tasks: [
       {
         id: 'mx2taaXpF38vYqMGbVtY',
@@ -58,6 +59,21 @@ jest.mock('../hooks', () => ({
 }));
 
 beforeEach(cleanup);
+
+const mockBatchDelete = jest.fn();
+const mockBatchCommit = jest.fn(() => Promise.resolve());
+
+jest.mock('../firebase', () => ({
+  firebase: {
+    firestore: () => ({
+      collection: () => ({ doc: (id) => ({ id }) }),
+      batch: () => ({
+        delete: (...args) => mockBatchDelete(...args),
+        commit: () => mockBatchCommit(),
+      }),
+    }),
+  },
+}));
 
 describe('<Tasks />', () => {
   afterEach(() => {
@@ -84,6 +100,19 @@ describe('<Tasks />', () => {
     const { queryByTestId } = render(<Tasks />);
     expect(queryByTestId('tasks')).toBeTruthy();
     expect(queryByTestId('project-name').textContent).toBe('🙌 THE OFFICE');
+  });
+
+  it('clears all completed tasks with the button', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+
+    const { getByTestId } = render(<Tasks />);
+    fireEvent.click(getByTestId('clear-completed'));
+    expect(mockBatchDelete).toHaveBeenCalledTimes(1);
+    expect(mockBatchDelete).toHaveBeenCalledWith({ id: 'done1' });
+    expect(mockBatchCommit).toHaveBeenCalledTimes(1);
   });
 
   it('renders a task with a collated title', () => {

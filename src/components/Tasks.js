@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Checkbox } from './Checkbox';
 import { AddTask } from './AddTask';
+import { firebase } from '../firebase';
 import { useTasks } from '../hooks';
 import { collatedTasks } from '../constants';
 import { getTitle, getCollatedTitle, collatedTasksExist } from '../helpers';
@@ -9,7 +10,16 @@ import { useSelectedProjectValue, useProjectsValue } from '../context';
 export const Tasks = () => {
   const { selectedProject } = useSelectedProjectValue();
   const { projects } = useProjectsValue();
-  const { tasks } = useTasks(selectedProject);
+  const { tasks, archivedTasks = [] } = useTasks(selectedProject);
+
+  const clearCompleted = () => {
+    const db = firebase.firestore();
+    const batch = db.batch();
+    archivedTasks.forEach((task) => {
+      batch.delete(db.collection('tasks').doc(task.id));
+    });
+    return batch.commit();
+  };
 
   let projectName = '';
 
@@ -42,6 +52,17 @@ export const Tasks = () => {
           </li>
         ))}
       </ul>
+
+      {archivedTasks.length > 0 && (
+        <button
+          type="button"
+          className="tasks__clear-completed"
+          data-testid="clear-completed"
+          onClick={clearCompleted}
+        >
+          Clear all completed
+        </button>
+      )}
 
       <AddTask />
     </div>
