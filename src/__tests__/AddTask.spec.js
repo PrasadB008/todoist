@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { AddTask } from '../components/AddTask';
+import { AddTask, parseSlashCommand } from '../components/AddTask';
 import { useSelectedProjectValue } from '../context';
 
 beforeEach(cleanup);
@@ -393,6 +393,59 @@ describe('<AddTask />', () => {
       expect(queryByTestId('task-date-overlay')).toBeFalsy();
 
       fireEvent.click(queryByTestId('add-task'));
+    });
+  });
+
+  describe('/todo slash command', () => {
+    it('parses /todo command correctly', () => {
+      const result = parseSlashCommand('/todo Buy groceries');
+      expect(result.command).toBe('todo');
+      expect(result.text).toBe('Buy groceries');
+    });
+
+    it('parses /todo command with multiple words', () => {
+      const result = parseSlashCommand('/todo Call mom and dad tomorrow');
+      expect(result.command).toBe('todo');
+      expect(result.text).toBe('Call mom and dad tomorrow');
+    });
+
+    it('returns null command for non-slash input', () => {
+      const result = parseSlashCommand('Regular task text');
+      expect(result.command).toBeNull();
+      expect(result.text).toBe('Regular task text');
+    });
+
+    it('returns null command for incomplete /todo', () => {
+      const result = parseSlashCommand('/todo');
+      expect(result.command).toBeNull();
+      expect(result.text).toBe('/todo');
+    });
+
+    it('renders <AddTask /> and adds a task using /todo command', () => {
+      useSelectedProjectValue.mockImplementation(() => ({
+        selectedProject: '1',
+      }));
+
+      const showQuickAddTask = true;
+      const setShowQuickAddTask = jest.fn(() => !showQuickAddTask);
+      const { queryByTestId } = render(
+        <AddTask
+          showQuickAddTask={showQuickAddTask}
+          setShowQuickAddTask={setShowQuickAddTask}
+        />
+      );
+      fireEvent.click(queryByTestId('show-main-action'));
+      expect(queryByTestId('add-task-content')).toBeTruthy();
+
+      fireEvent.change(queryByTestId('add-task-content'), {
+        target: { value: '/todo Buy milk and eggs' },
+      });
+      expect(queryByTestId('add-task-content').value).toBe(
+        '/todo Buy milk and eggs'
+      );
+
+      fireEvent.click(queryByTestId('add-task'));
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
   });
 });
