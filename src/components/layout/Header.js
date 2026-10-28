@@ -39,7 +39,9 @@ export const Header = ({ darkMode, setDarkMode }) => {
               >
                 <FaPizzaSlice />
                 <span
-                  className={`darkmode-switch${darkMode ? ' darkmode-switch--on' : ''}`}
+                  className={`darkmode-switch${
+                    darkMode ? ' darkmode-switch--on' : ''
+                  }`}
                   aria-hidden="true"
                 >
                   <span className="darkmode-switch__thumb" />

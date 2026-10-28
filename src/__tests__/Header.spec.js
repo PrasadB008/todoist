@@ -38,9 +38,9 @@ describe('<Header />', () => {
       expect(toggle.getAttribute('aria-checked')).toBe('false');
 
       rerender(<Header darkMode setDarkMode={jest.fn()} />);
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
-        'true'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-checked')
+      ).toBe('true');
     });
 
     it('turns dark mode off when the switch is on and clicked', () => {
