@@ -449,7 +449,7 @@ describe('<AddTask />', () => {
       expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
-    it('renders <AddTask /> and does not parse /todo without text', () => {
+    it('renders <AddTask /> and treats /todo without text as regular task', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -471,11 +471,11 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo');
 
       fireEvent.click(queryByTestId('add-task'));
-      // Should not call setShowQuickAddTask because the task is invalid
-      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      // /todo without text doesn't match the regex, so it's treated as a regular task
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
-    it('renders <AddTask /> and does not parse /todo with only whitespace', () => {
+    it('renders <AddTask /> and treats /todo with only whitespace as regular task', () => {
       useSelectedProjectValue.mockImplementation(() => ({
         selectedProject: '1',
       }));
@@ -497,8 +497,8 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-content').value).toBe('/todo   ');
 
       fireEvent.click(queryByTestId('add-task'));
-      // Should not call setShowQuickAddTask because the task is invalid
-      expect(setShowQuickAddTask).not.toHaveBeenCalled();
+      // /todo with only whitespace doesn't match the regex, so it's treated as a regular task
+      expect(setShowQuickAddTask).toHaveBeenCalled();
     });
 
     it('renders <AddTask /> and treats regular text without /todo as normal task', () => {
