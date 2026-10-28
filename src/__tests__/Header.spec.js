@@ -36,14 +36,14 @@ describe('<Header />', () => {
       expect(queryByTestId('dark-mode-action').getAttribute('role')).toBe(
         'switch'
       );
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
-        'false'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-checked')
+      ).toBe('false');
 
       rerender(<Header darkMode setDarkMode={jest.fn()} />);
-      expect(queryByTestId('dark-mode-action').getAttribute('aria-checked')).toBe(
-        'true'
-      );
+      expect(
+        queryByTestId('dark-mode-action').getAttribute('aria-checked')
+      ).toBe('true');
     });
 
     it('renders the header component and set quick add task to true using onClick', () => {
