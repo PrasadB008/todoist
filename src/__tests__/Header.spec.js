@@ -3,6 +3,7 @@ import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Header } from '../components/layout/Header';
 
 jest.mock('../context', () => ({
+  useAuthValue: jest.fn(() => ({ user: { uid: 'test-uid' } })),
   useSelectedProjectValue: jest.fn(() => ({ selectedProject: 1 })),
   useProjectsValue: jest.fn(() => ({ projects: [] })),
 }));

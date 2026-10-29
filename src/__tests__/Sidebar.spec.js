@@ -5,6 +5,7 @@ import { Sidebar } from '../components/layout/Sidebar';
 beforeEach(cleanup);
 
 jest.mock('../context', () => ({
+  useAuthValue: jest.fn(() => ({ user: { uid: 'test-uid' } })),
   useSelectedProjectValue: jest.fn(() => ({
     setSelectedProject: jest.fn(() => 'INBOX'),
   })),
