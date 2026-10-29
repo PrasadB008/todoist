@@ -86,6 +86,16 @@ describe('<Tasks />', () => {
     expect(queryByTestId('project-name').textContent).toBe('🙌 THE OFFICE');
   });
 
+  it('renders a priority label, defaulting to P4 when none is stored', () => {
+    useSelectedProjectValue.mockImplementation(() => ({
+      setSelectedProject: jest.fn(() => 'INBOX'),
+      selectedProject: 'INBOX',
+    }));
+
+    const { queryByTestId } = render(<Tasks />);
+    expect(queryByTestId('task-priority').textContent).toBe('P4');
+  });
+
   it('renders a task with a collated title', () => {
     useSelectedProjectValue.mockImplementation(() => ({
       setSelectedProject: jest.fn(() => 'INBOX'),

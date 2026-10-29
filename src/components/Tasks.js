@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Checkbox } from './Checkbox';
 import { AddTask } from './AddTask';
 import { useTasks } from '../hooks';
-import { collatedTasks } from '../constants';
+import { collatedTasks, DEFAULT_PRIORITY } from '../constants';
 import { getTitle, getCollatedTitle, collatedTasksExist } from '../helpers';
 import { useSelectedProjectValue, useProjectsValue } from '../context';
 
@@ -39,6 +39,14 @@ export const Tasks = () => {
           <li key={`${task.id}`}>
             <Checkbox id={task.id} taskDesc={task.task} />
             <span>{task.task}</span>
+            <span
+              className={`task__priority task__priority--p${
+                task.priority || DEFAULT_PRIORITY
+              }`}
+              data-testid="task-priority"
+            >
+              {`P${task.priority || DEFAULT_PRIORITY}`}
+            </span>
           </li>
         ))}
       </ul>
