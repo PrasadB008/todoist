@@ -4,7 +4,6 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
 import { useSelectedProjectValue } from '../context';
-import { priorities, DEFAULT_PRIORITY } from '../constants';
 import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
 
@@ -17,7 +16,6 @@ export const AddTask = ({
   const [task, setTask] = useState('');
   const [taskDate, setTaskDate] = useState('');
   const [project, setProject] = useState('');
-  const [priority, setPriority] = useState(DEFAULT_PRIORITY);
   const [showMain, setShowMain] = useState(shouldShowMain);
   const [showProjectOverlay, setShowProjectOverlay] = useState(false);
   const [showTaskDate, setShowTaskDate] = useState(false);
@@ -45,13 +43,11 @@ export const AddTask = ({
           projectId,
           task,
           date: collatedDate || taskDate,
-          priority,
           userId: 'jlIFXIwyAL3tzHMtzRbw',
         })
         .then(() => {
           setTask('');
           setProject('');
-          setPriority(DEFAULT_PRIORITY);
           setShowMain('');
           setShowProjectOverlay(false);
         })
@@ -128,19 +124,6 @@ export const AddTask = ({
             value={task}
             onChange={(e) => setTask(e.target.value)}
           />
-          <select
-            className="add-task__priority"
-            aria-label="Select task priority"
-            data-testid="add-task-priority"
-            value={priority}
-            onChange={(e) => setPriority(Number(e.target.value))}
-          >
-            {priorities.map(({ value, label }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
           <button
             type="button"
             className="add-task__submit"

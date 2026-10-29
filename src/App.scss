@@ -526,16 +526,12 @@ header {
       }
     }
 
-    .task__priority {
+    .task__project {
       margin-left: auto;
-      padding-left: 10px;
-      font-size: 12px;
-      font-weight: bold;
+      padding-left: 20px;
       color: #808080;
-
-      &--p1 { color: #d1453b; }
-      &--p2 { color: #eb8909; }
-      &--p3 { color: #246fe0; }
+      font-size: 12px;
+      white-space: nowrap;
     }
   }
 }
@@ -613,15 +609,6 @@ header {
     height: 35px;
     padding-left: 10px;
     padding-right: 10px;
-  }
-
-  &__priority {
-    margin-top: 10px;
-    margin-right: 5px;
-    height: 30px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    background-color: white;
   }
 
   &__cancel, &__submit {

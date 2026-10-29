@@ -31,18 +31,6 @@ describe('<AddTask />', () => {
       expect(queryByTestId('add-task-comp')).toBeTruthy();
     });
 
-    it('lets the user pick a priority for the task', () => {
-      const { queryByTestId } = render(<AddTask showAddTaskMain />);
-      fireEvent.click(queryByTestId('show-main-action'));
-
-      expect(queryByTestId('add-task-priority').value).toBe('4');
-
-      fireEvent.change(queryByTestId('add-task-priority'), {
-        target: { value: '1' },
-      });
-      expect(queryByTestId('add-task-priority').value).toBe('1');
-    });
-
     it('renders the <AddTask /> quick overlay', () => {
       const setShowQuickAddTask = jest.fn();
 
