@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup, waitFor } from '@testing-library/react';
+import { render, cleanup, act } from '@testing-library/react';
 import { UserProvider, useUserValue } from '../context/user-context';
 
 const mockSignInAnonymously = jest.fn(() => Promise.resolve());
@@ -35,24 +35,26 @@ describe('<UserProvider />', () => {
       </UserProvider>
     );
 
-    mockAuthCallback(null);
+    act(() => {
+      mockAuthCallback(null);
+    });
 
     expect(mockSignInAnonymously).toHaveBeenCalled();
     expect(getByTestId('user-id').textContent).toBe('none');
   });
 
-  it('exposes the uid of the signed-in user', async () => {
+  it('exposes the uid of the signed-in user', () => {
     const { getByTestId } = render(
       <UserProvider>
         <ShowUser />
       </UserProvider>
     );
 
-    mockAuthCallback({ uid: 'abc123' });
+    act(() => {
+      mockAuthCallback({ uid: 'abc123' });
+    });
 
-    await waitFor(() =>
-      expect(getByTestId('user-id').textContent).toBe('abc123')
-    );
+    expect(getByTestId('user-id').textContent).toBe('abc123');
     expect(mockSignInAnonymously).not.toHaveBeenCalled();
   });
 });
