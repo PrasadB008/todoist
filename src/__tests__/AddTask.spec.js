@@ -8,6 +8,7 @@ beforeEach(cleanup);
 jest.mock('../context', () => ({
   useSelectedProjectValue: jest.fn(() => ({ selectedProject: '1' })),
   useProjectsValue: jest.fn(() => ({ projects: [] })),
+  useUserValue: jest.fn(() => ({ userId: 'test-user' })),
 }));
 
 jest.mock('../firebase', () => ({

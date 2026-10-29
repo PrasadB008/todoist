@@ -3,7 +3,7 @@ import { FaRegListAlt, FaRegCalendarAlt } from 'react-icons/fa';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { firebase } from '../firebase';
-import { useSelectedProjectValue } from '../context';
+import { useSelectedProjectValue, useUserValue } from '../context';
 import { ProjectOverlay } from './ProjectOverlay';
 import { TaskDate } from './TaskDate';
 
@@ -21,6 +21,7 @@ export const AddTask = ({
   const [showTaskDate, setShowTaskDate] = useState(false);
 
   const { selectedProject } = useSelectedProjectValue();
+  const { userId } = useUserValue();
 
   const addTask = () => {
     const projectId = project || selectedProject;
@@ -35,6 +36,7 @@ export const AddTask = ({
     return (
       task &&
       projectId &&
+      userId &&
       firebase
         .firestore()
         .collection('tasks')
@@ -43,7 +45,7 @@ export const AddTask = ({
           projectId,
           task,
           date: collatedDate || taskDate,
-          userId: 'jlIFXIwyAL3tzHMtzRbw',
+          userId,
         })
         .then(() => {
           setTask('');
