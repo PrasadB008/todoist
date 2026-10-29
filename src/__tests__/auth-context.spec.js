@@ -18,11 +18,10 @@ jest.mock('../firebase', () => ({
 
 const Probe = () => {
   const { user, loading } = useAuthValue();
-  return (
-    <div data-testid="probe">
-      {loading ? 'loading' : user ? user.uid : 'signed-out'}
-    </div>
-  );
+  let text = 'signed-out';
+  if (loading) text = 'loading';
+  else if (user) text = user.uid;
+  return <div data-testid="probe">{text}</div>;
 };
 
 describe('<AuthProvider />', () => {

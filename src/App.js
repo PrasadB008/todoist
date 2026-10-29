@@ -12,7 +12,11 @@ import {
 const SignIn = () => (
   <div className="sign-in" data-testid="sign-in">
     <h1>Todoist</h1>
-    <button type="button" data-testid="sign-in-action" onClick={signInWithGoogle}>
+    <button
+      type="button"
+      data-testid="sign-in-action"
+      onClick={signInWithGoogle}
+    >
       Sign in with Google
     </button>
   </div>
