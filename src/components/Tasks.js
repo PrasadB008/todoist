@@ -26,6 +26,13 @@ export const Tasks = () => {
     projectName = getTitle(projects, selectedProject).name;
   }
 
+  const getTaskProjectName = (task) => {
+    const project = (projects || []).find(
+      (p) => p.projectId === task.projectId
+    );
+    return project ? project.name : '';
+  };
+
   useEffect(() => {
     document.title = `${projectName}: Todoist`;
   });
@@ -39,6 +46,11 @@ export const Tasks = () => {
           <li key={`${task.id}`}>
             <Checkbox id={task.id} taskDesc={task.task} />
             <span>{task.task}</span>
+            {getTaskProjectName(task) && (
+              <span className="task__project" data-testid="task-project">
+                {getTaskProjectName(task)}
+              </span>
+            )}
           </li>
         ))}
       </ul>
