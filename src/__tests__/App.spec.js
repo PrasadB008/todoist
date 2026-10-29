@@ -8,7 +8,7 @@ const mockSignIn = jest.fn(() => Promise.resolve());
 jest.mock('../firebase', () => ({
   firebase: {
     auth: jest.fn(() => ({
-      onAuthStateChanged: jest.fn(callback => {
+      onAuthStateChanged: jest.fn((callback) => {
         callback(mockUser);
         return jest.fn();
       }),
