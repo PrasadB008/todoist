@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaPizzaSlice } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import { AddTask } from '../AddTask';
+import { signOut } from '../../context/auth-context';
 
 export const Header = ({ darkMode, setDarkMode }) => {
   const [shouldShowMain, setShouldShowMain] = useState(false);
@@ -36,6 +37,16 @@ export const Header = ({ darkMode, setDarkMode }) => {
                 onClick={() => setDarkMode(!darkMode)}
               >
                 <FaPizzaSlice />
+              </button>
+            </li>
+            <li className="settings__signout">
+              <button
+                data-testid="sign-out-action"
+                aria-label="Sign out"
+                type="button"
+                onClick={signOut}
+              >
+                Sign out
               </button>
             </li>
           </ul>
