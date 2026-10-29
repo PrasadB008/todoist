@@ -26,8 +26,10 @@ export const Tasks = () => {
     projectName = getTitle(projects, selectedProject).name;
   }
 
-  const getTaskProjectName = task => {
-    const project = (projects || []).find(p => p.projectId === task.projectId);
+  const getTaskProjectName = (task) => {
+    const project = (projects || []).find(
+      (p) => p.projectId === task.projectId
+    );
     return project ? project.name : '';
   };
 
