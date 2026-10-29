@@ -57,7 +57,7 @@ export const useTasks = (selectedProject, userId) => {
   return { tasks, archivedTasks };
 };
 
-export const useProjects = userId => {
+export const useProjects = (userId) => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {

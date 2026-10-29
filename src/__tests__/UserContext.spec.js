@@ -8,7 +8,7 @@ let mockAuthCallback;
 jest.mock('../firebase', () => ({
   firebase: {
     auth: jest.fn(() => ({
-      onAuthStateChanged: jest.fn(cb => {
+      onAuthStateChanged: jest.fn((cb) => {
         mockAuthCallback = cb;
         return jest.fn();
       }),

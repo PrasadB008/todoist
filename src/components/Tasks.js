@@ -4,7 +4,11 @@ import { AddTask } from './AddTask';
 import { useTasks } from '../hooks';
 import { collatedTasks } from '../constants';
 import { getTitle, getCollatedTitle, collatedTasksExist } from '../helpers';
-import { useSelectedProjectValue, useProjectsValue, useUserValue } from '../context';
+import {
+  useSelectedProjectValue,
+  useProjectsValue,
+  useUserValue,
+} from '../context';
 
 export const Tasks = () => {
   const { selectedProject } = useSelectedProjectValue();
