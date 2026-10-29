@@ -1,3 +1,5 @@
+import { AuthContext, AuthProvider, useAuthValue } from './auth-context';
+
 import {
   ProjectsContext,
   ProjectsProvider,
@@ -11,6 +13,9 @@ import {
 } from './selected-project-context';
 
 export {
+  AuthContext,
+  AuthProvider,
+  useAuthValue,
   ProjectsContext,
   ProjectsProvider,
   useProjectsValue,
