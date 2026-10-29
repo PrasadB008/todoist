@@ -2,15 +2,15 @@ import React from 'react';
 import { render, cleanup, act } from '@testing-library/react';
 import { AuthProvider, useAuthValue } from '../context/auth-context';
 
-let authCallback;
-const unsubscribe = jest.fn();
+let mockAuthCallback;
+const mockUnsubscribe = jest.fn();
 
 jest.mock('../firebase', () => ({
   firebase: {
     auth: () => ({
       onAuthStateChanged: (cb) => {
-        authCallback = cb;
-        return unsubscribe;
+        mockAuthCallback = cb;
+        return mockUnsubscribe;
       },
     }),
   },
@@ -37,10 +37,10 @@ describe('<AuthProvider />', () => {
 
     expect(getByTestId('probe').textContent).toBe('loading');
 
-    act(() => authCallback({ uid: 'user-123' }));
+    act(() => mockAuthCallback({ uid: 'user-123' }));
     expect(getByTestId('probe').textContent).toBe('user-123');
 
-    act(() => authCallback(null));
+    act(() => mockAuthCallback(null));
     expect(getByTestId('probe').textContent).toBe('signed-out');
   });
 
@@ -51,6 +51,6 @@ describe('<AuthProvider />', () => {
       </AuthProvider>
     );
     unmount();
-    expect(unsubscribe).toHaveBeenCalled();
+    expect(mockUnsubscribe).toHaveBeenCalled();
   });
 });
